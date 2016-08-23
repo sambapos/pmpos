@@ -1,8 +1,4 @@
 import React from 'react';
-import RaisedButton from 'material-ui/RaisedButton';
-import {List, ListItem} from 'material-ui/List';
-import {GridList, GridTile} from 'material-ui/GridList';
-import Paper from 'material-ui/Paper';
 
 const styles = {
     root: {
