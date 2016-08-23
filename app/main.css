@@ -1,0 +1,80 @@
+body {
+  background-color: whitesmoke;
+  font-family: sans-serif;
+  margin: 0px;
+}
+
+.mainDiv{
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.categories {
+  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.menuItems{
+  display: flex;
+  flex-wrap : wrap;
+  overflow-Y: auto;
+ height: 30%;
+}
+
+.orders{
+  margin: 5px;
+  height: 50%;
+  overflow-x: auto;
+}
+
+.totals{
+  margin: 5px;
+}
+
+.menuButton {
+  width: 31%;
+  margin: 3px;
+}
+
+.menuButton div{
+  height: 100%;
+}
+
+.menuButtonContent{
+  height: 100%;
+}
+
+
+
+.order{
+  display: flex;
+  margin: 10px;
+}
+
+.orderQuantity{
+  width: 10%;
+}
+
+.orderName{
+  width: 60%;
+}
+
+.orderPrice{
+  width: 30%;
+  text-align: right;
+}
+
+.ticketTotal{
+  font-size: 2em;
+  font-weight: bold;
+}
+
+.totals{
+  text-align: right;  
+}
+
+.mrkdwn p {
+  margin: 0;
+}
