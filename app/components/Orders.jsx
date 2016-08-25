@@ -1,5 +1,6 @@
 import React from 'react';
 import Order from './Order';
+import ReactDom from 'react-dom';
 
 const styles = {
     root: {
@@ -16,9 +17,17 @@ export default class Orders extends React.Component {
             <div className="orders" id="orders">
                 {ticket.orders.map(({uid, name, quantity, price}) =>
                     <Order key={uid} name={name} quantity={quantity}
-                        price={price.toFixed(2)} onClick={onClick}/>
+                        price={price.toFixed(2) } onClick={onClick}/>
                 ) }
             </div>
         );
+    }
+
+    componentDidUpdate() {
+        var node = ReactDom.findDOMNode(this);
+        if (node) {
+        console.log('node', node);
+            node.scrollTop = node.scrollHeight;
+        }
     }
 } 

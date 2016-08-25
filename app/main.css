@@ -4,9 +4,12 @@ body {
   margin: 0px;
 }
 
-.mainDiv{
+#app{
   height: 100vh;
+}
+.mainDiv{
   display: flex;
+  height: 100%;
   flex-direction: column;
 }
 
@@ -20,13 +23,21 @@ body {
   display: flex;
   flex-wrap : wrap;
   overflow-Y: auto;
- height: 30%;
+  height: 29%;
 }
 
 .orders{
   margin: 5px;
-  height: 50%;
+  height: 42%;
   overflow-x: auto;
+}
+
+.commands{
+  padding:5px;
+}
+
+.commandButton div div{
+  padding: 0 6px;
 }
 
 .totals{
@@ -45,8 +56,6 @@ body {
 .menuButtonContent{
   height: 100%;
 }
-
-
 
 .order{
   display: flex;
@@ -67,12 +76,18 @@ body {
 }
 
 .ticketTotal{
-  font-size: 2em;
-  font-weight: bold;
+  
+}
+
+.ticketTotalLabel{
+  flex-grow: 1;
 }
 
 .totals{
-  text-align: right;  
+  padding: 0 5px;
+  display: flex;
+  font-size: 2em;
+  font-weight: bold;  
 }
 
 .mrkdwn p {
