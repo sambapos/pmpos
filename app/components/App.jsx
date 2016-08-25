@@ -7,7 +7,7 @@ import Orders from './Orders';
 import TicketTotal from './TicketTotal';
 import Commands from './Commands';
 import Signalr from '../signalr';
-import {getCategories, getMenuItems, addOrderToTicket,
+import {getCategories, getMenuItems,
     registerTerminal, createTerminalTicket, addOrderToTerminalTicket,
     getTerminalTicket, clearTerminalTicketOrders, closeTerminalTicket,
     getTerminalExists} from '../queries';

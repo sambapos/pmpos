@@ -2,14 +2,6 @@ import React from 'react';
 import Order from './Order';
 import ReactDom from 'react-dom';
 
-const styles = {
-    root: {
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'space-around'
-    }
-};
-
 export default class Orders extends React.Component {
     render() {
         const {ticket, onClick = () => { } } = this.props;

@@ -1,12 +1,5 @@
 import React from 'react';
 
-const styles = {
-    root: {
-        display: 'flex',
-        alignContent: 'stretch'
-    }
-};
-
 export default class Order extends React.Component {
     render() {
         const {id, name, quantity, price, onClick = () => { } } = this.props;
