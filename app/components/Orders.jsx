@@ -7,9 +7,9 @@ export default class Orders extends React.Component {
         const {ticket, onClick = () => { } } = this.props;
         return (
             <div className="orders" id="orders">
-                {ticket.orders.map(({uid, name, quantity, price}) =>
+                {ticket.orders.map(({uid, name, quantity, price, priceTag}) =>
                     <Order key={uid} name={name} quantity={quantity}
-                        price={price.toFixed(2) } onClick={onClick}/>
+                        price={price.toFixed(2)} priceTag={priceTag} onClick={onClick}/>
                 ) }
             </div>
         );
@@ -18,7 +18,6 @@ export default class Orders extends React.Component {
     componentDidUpdate() {
         var node = ReactDom.findDOMNode(this);
         if (node) {
-        console.log('node', node);
             node.scrollTop = node.scrollHeight;
         }
     }

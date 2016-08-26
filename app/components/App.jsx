@@ -5,6 +5,7 @@ import Categories from './Categories';
 import MenuItems from './MenuItems';
 import Orders from './Orders';
 import TicketTotal from './TicketTotal';
+import TicketTags from './TicketTags';
 import Commands from './Commands';
 import Signalr from '../signalr';
 import {getCategories, getMenuItems,
@@ -116,6 +117,7 @@ export default class App extends React.Component {
                 <MenuItems menuItems={menuItems}
                     onClick={this.onMenuItemClick}/>
                 <Orders ticket={ticket}/>
+                <TicketTags ticket={ticket}/>
                 <Commands commands = {[
                     { command: this.cleanTicket, caption: 'Clear Orders', color: 'White' },
                     { command: this.closeTicket, caption: 'Close', color: 'Red' }

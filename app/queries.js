@@ -181,6 +181,7 @@ function getAddOrderToTerminalTicketScript(terminalId, menuItem) {
 function getTicketResult() {
     return `{id,uid,type,number,date,totalAmount,remainingAmount,
   states{stateName,state},
+  tags{tagName,tag},
 	orders{
     id,
     uid,
@@ -188,6 +189,7 @@ function getTicketResult() {
     quantity,
     portion,
     price,
+    priceTag,
     calculatePrice,
     increaseInventory,
     decreaseInventory,

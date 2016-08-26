@@ -75,12 +75,23 @@ body {
   text-align: right;
 }
 
+.orderPriceTag{
+  font-size: 0.65em;
+  margin: 0px 5px; 
+}
+
 .ticketTotal{
   
 }
 
 .ticketTotalLabel{
   flex-grow: 1;
+}
+
+.ticketTags{
+  padding: 5px 10px;
+  font-size: 0.75em;
+  background-color: lightyellow;
 }
 
 .totals{
