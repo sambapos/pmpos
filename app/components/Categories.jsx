@@ -6,14 +6,14 @@ export default class Categories extends React.Component {
         const {categories, selectedCategory, onClick = () => { } } = this.props;
         return (
             <div className="categories" id="categories">
-                {categories.map(({id, name, color}) =>
-                    <span key={id}>
-                        <RaisedButton 
-                            backgroundColor={color}
-                            onClick={onClick.bind(null, name) }>
-                            <span>{selectedCategory===name ? <b>{name}</b> : name}</span>
-                        </RaisedButton>
-                    </span>
+                {categories.map(({id, name, color, foreground}) =>
+                    <RaisedButton
+                        style={{'margin':2}}
+                        label = {selectedCategory === name ? <b>-{name}-</b> : name}
+                        labelColor = {foreground}
+                        key={id}
+                        backgroundColor={color}
+                        onClick={onClick.bind(null, name) }/>
                 ) }
             </div>
         );

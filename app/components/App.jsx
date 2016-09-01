@@ -8,7 +8,7 @@ import TicketTotal from './TicketTotal';
 import TicketTags from './TicketTags';
 import Commands from './Commands';
 import Signalr from '../signalr';
-import {getCategories, getMenuItems,
+import {getMenu, postRefresh,
     registerTerminal, createTerminalTicket, addOrderToTerminalTicket,
     getTerminalTicket, clearTerminalTicketOrders, closeTerminalTicket,
     getTerminalExists} from '../queries';
@@ -17,15 +17,10 @@ export default class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            categories: [
-                {
-                    id: 1,
-                    name: 'Loading...'
-                }
-            ],
+            menu: { categories: [{ id: 1, name: 'Loading' }] },
             selectedCategory: '',
             menuItems: [
-                { id: 1, name: 'Loading...' }
+                { productId: 1, name: 'Loading...' }
             ],
             terminalId: '',
             errorMessage: '',
@@ -68,7 +63,7 @@ export default class App extends React.Component {
 
     componentDidMount() {
         Signalr.connect(() => {
-            this.refreshCategories();
+            console.log('Connected!!!');
         });
         if (localStorage['terminalId']) {
             var terminalId = localStorage['terminalId'];
@@ -81,7 +76,7 @@ export default class App extends React.Component {
             });
         }
         else registerTerminal((terminalId) => this.updateTerminalId(terminalId));
-        this.refreshCategories();
+        this.refreshMenu();
     }
 
     updateTerminalId(terminalId) {
@@ -92,26 +87,26 @@ export default class App extends React.Component {
         });
     }
 
-    refreshCategories() {
-        getCategories((categories) => {
-            this.setState({ categories: categories });
-            if (categories[0])
-                this.onCategoryClick(categories[0].name);
+    refreshMenu() {
+        getMenu((menu) => {
+            this.setState({ menu: menu });
+            if (menu.categories[0])
+                this.onCategoryClick(menu.categories[0].name);
         })
     }
 
     refreshMenuItems(category) {
-        getMenuItems(category, (items) => {
-            this.setState({ menuItems: items });
-        })
+        var categories = this.state.menu.categories;
+        var c = categories.find(x => x.name === category);
+        this.setState({ menuItems: c.menuItems });
     }
 
     render() {
-        const {categories, selectedCategory, menuItems, ticket} = this.state;
+        const {menu, selectedCategory, menuItems, ticket} = this.state;
         return (
             <div className="mainDiv">
                 <Header header={this.state.ticket.entityName}/>
-                <Categories categories={categories}
+                <Categories categories={menu.categories}
                     selectedCategory={selectedCategory}
                     onClick={this.onCategoryClick}/>
                 <MenuItems menuItems={menuItems}
@@ -132,8 +127,8 @@ export default class App extends React.Component {
         this.refreshMenuItems(category);
     }
 
-    onMenuItemClick = (menuItem) => {
-        addOrderToTerminalTicket(this.state.terminalId, menuItem, 1, (ticket) => {
+    onMenuItemClick = (productId) => {
+        addOrderToTerminalTicket(this.state.terminalId, productId, 1, (ticket) => {
             this.setState({ ticket: ticket });
         });
     }
@@ -146,6 +141,7 @@ export default class App extends React.Component {
 
     closeTicket = () => {
         closeTerminalTicket(this.state.terminalId, (errorMessage) => {
+            postRefresh();
             this.setState({ errorMessage: errorMessage });
             createTerminalTicket(this.state.terminalId, (ticket) => {
                 this.setState({ ticket: ticket });

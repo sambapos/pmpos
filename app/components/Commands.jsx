@@ -11,6 +11,7 @@ export default class Commands extends React.Component {
                         className="commandButton"
                         key={caption}
                         backgroundColor={color}
+                        labelColor='White'
                         onClick={command}>
                         {caption}
                     </RaisedButton>
