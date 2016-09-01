@@ -3,9 +3,10 @@ import jQuery from 'jquery';
 
 const serverUrl = 'http://localhost:9000'
 const terminaName = 'Server';
-const departmentName = 'Restaurant';
+const departmentName = 'Bar';
 const userName = 'Administrator';
-const ticketTypeName='Ticket';
+const ticketTypeName = 'Ticket';
+const menuName = 'Bar';
 
 $.postJSON = function (url, data, callback) {
     return jQuery.ajax({
@@ -30,6 +31,17 @@ export function getMenu(callback) {
             //handle
         } else {
             if (callback) callback(response.data.menu);
+        }
+    });
+}
+
+export function getProductPortions(productId, callback) {
+    var query = getProductPortionsScript(productId);
+    $.postJSON('/api/graphql', { query: query }, function (response) {
+        if (response.errors) {
+            //handle
+        } else {
+            if (callback) callback(response.data.portions);
         }
     });
 }
@@ -124,8 +136,26 @@ export function addOrderToTerminalTicket(terminalId, productId, quantity = 1, ca
     });
 }
 
+export function updateOrderPortionOfTerminalTicket(terminalId, orderUid, portion, callback) {
+    var query = getUpdateOrderPortionOfTerminalTicketScript(terminalId, orderUid,portion);
+    console.log(query);
+    $.postJSON('/api/graphql/', { query: query }, function (response) {
+        if (response.errors) {
+            // handle errors
+        } else {
+            if (callback) callback(response.data.ticket);
+        }
+    });
+}
+
+
+
 function getMenuScript() {
-    return '{menu:getMenu(name:"Menu"){categories{id,name,color,foreground,menuItems{id,name,color,foreground,productId}}}}';
+    return `{menu:getMenu(name:"${menuName}"){categories{id,name,color,foreground,menuItems{id,name,color,foreground,productId}}}}`;
+}
+
+function getProductPortionsScript(productId) {
+    return `{portions:getProductPortions(productId:${productId}){id,name,price}}`;
 }
 
 function getRegisterTerminalScript() {
@@ -154,6 +184,12 @@ function getClearTerminalTicketScript(terminalId) {
         ${getTicketResult()}}`;
 }
 
+function getUpdateOrderPortionOfTerminalTicketScript(terminalId,orderUid,portion) {
+    return `mutation m {ticket:updateOrderPortionOfTerminalTicket(
+        terminalId:"${terminalId}",orderUid:"${orderUid}",portion:"${portion}")
+    ${getTicketResult()}}`;
+}
+
 function getCloseTerminalTicketScript(terminalId) {
     return `mutation m{
             errorMessage:closeTerminalTicket(terminalId:"${terminalId}")}`;
@@ -178,6 +214,7 @@ function getTicketResult() {
 	orders{
     id,
     uid,
+    productId,
     name,
     quantity,
     portion,

@@ -1,17 +1,17 @@
 import React from 'react';
 import uuid from 'uuid';
 import Header from './Header';
-import Categories from './Categories';
-import MenuItems from './MenuItems';
+import Menu from './Menu';
 import Orders from './Orders';
 import TicketTotal from './TicketTotal';
 import TicketTags from './TicketTags';
 import Commands from './Commands';
 import Signalr from '../signalr';
+import Snackbar from 'material-ui/Snackbar';
 import {getMenu, postRefresh,
     registerTerminal, createTerminalTicket, addOrderToTerminalTicket,
     getTerminalTicket, clearTerminalTicketOrders, closeTerminalTicket,
-    getTerminalExists} from '../queries';
+    getTerminalExists,updateOrderPortionOfTerminalTicket} from '../queries';
 
 export default class App extends React.Component {
     constructor(props) {
@@ -24,6 +24,8 @@ export default class App extends React.Component {
             ],
             terminalId: '',
             errorMessage: '',
+            isMessageOpen: false,
+            message: '',
             ticket: {
                 id: 10,
                 uid: 'CyB2Fj__vkO1wePOCG9kjQ',
@@ -106,30 +108,35 @@ export default class App extends React.Component {
         return (
             <div className="mainDiv">
                 <Header header={this.state.ticket.entityName}/>
-                <Categories categories={menu.categories}
+                <Menu categories={menu.categories}
                     selectedCategory={selectedCategory}
-                    onClick={this.onCategoryClick}/>
-                <MenuItems menuItems={menuItems}
-                    onClick={this.onMenuItemClick}/>
-                <Orders ticket={ticket}/>
+                    onCategoryClick={this.onCategoryClick}
+                    menuItems={menuItems}
+                    onMenuItemClick={this.onMenuItemClick}/>
+                <Orders ticket={ticket} onChangePortion={this.changePortion}/>
                 <TicketTags ticket={ticket}/>
                 <Commands commands = {[
                     { command: this.cleanTicket, caption: 'Clear Orders', color: 'White' },
-                    { command: this.closeTicket, caption: 'Close', color: 'Red' }
+                    { command: this.closeTicket, caption: 'Close', color: 'Red', foreground: 'White' }
                 ]}/>
                 <TicketTotal ticket={ticket}/>
+                <Snackbar
+                    open={this.state.isMessageOpen}
+                    message={this.state.message}
+                    autoHideDuration={4000}
+                    onRequestClose={this.handleRequestCloseMessage}/>
             </div>
         );
     }
 
     onCategoryClick = (category) => {
-        this.setState({ selectedCategory: category });
+        this.setState({ selectedCategory: category, isMessageOpen: false });
         this.refreshMenuItems(category);
     }
 
     onMenuItemClick = (productId) => {
         addOrderToTerminalTicket(this.state.terminalId, productId, 1, (ticket) => {
-            this.setState({ ticket: ticket });
+            this.setState({ ticket: ticket, isMessageOpen: false });
         });
     }
 
@@ -140,12 +147,28 @@ export default class App extends React.Component {
     }
 
     closeTicket = () => {
+        if (this.state.ticket.orders.length == 0) {
+            this.setState({ isMessageOpen: true, message: 'Add orders to create a ticket.' });
+            return;
+        }
         closeTerminalTicket(this.state.terminalId, (errorMessage) => {
             postRefresh();
-            this.setState({ errorMessage: errorMessage });
+            this.setState({ errorMessage: errorMessage, isMessageOpen: true, message: 'Ticket sucsessfully created!' });
             createTerminalTicket(this.state.terminalId, (ticket) => {
                 this.setState({ ticket: ticket });
             });
         });
     }
+
+    changePortion = (orderUid, portion) => {
+        updateOrderPortionOfTerminalTicket(this.state.terminalId, orderUid, portion, (ticket) => {
+            this.setState({ticket});
+        });
+    }
+
+    handleRequestCloseMessage = () => {
+        this.setState({
+            isMessageOpen: false
+        });
+    };
 }
