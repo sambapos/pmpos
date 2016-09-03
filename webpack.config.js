@@ -23,7 +23,7 @@ const common = merge(
     // We'll be using the latter form given it's
     // convenient with more complex configurations.
     entry: {
-      app: ['whatwg-fetch', PATHS.app]
+      app: ['babel-polyfill', PATHS.app]
     },
     output: {
       path: PATHS.build,

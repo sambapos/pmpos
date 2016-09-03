@@ -6,18 +6,20 @@ export default class MenuItem extends React.Component {
     render() {
         const {menuItem, onClick = () => { } } = this.props;
         const style = {
-            'height': '100%',
-            'width': '100%'
+            'display': 'flex',
+            'flex':'1',
+            'height':'auto'
+
         };
         const style2 = {
             'color': menuItem.foreground,
-            'height': '100%'
+            'flex':'1'
         };
         return (
             <div className='menuButton'>
                 <RaisedButton 
                     backgroundColor={ menuItem.color ? menuItem.color : ''}
-                    onClick={onClick.bind(null, menuItem.productId) }
+                    onClick={onClick.bind(null, menuItem.productId,menuItem.defaultOrderTags) }
                     style={style}>
                     <div style={style2}>
                         <ReactMarkdown source={menuItem.name}/>

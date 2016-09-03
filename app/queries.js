@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import jQuery from 'jquery';
 
-const serverUrl = 'http://192.168.1.10:9000'
+const serverUrl = 'http://localhost:9000'
 const terminaName = 'Server';
 const departmentName = 'Restaurant';
 const userName = 'Administrator';
@@ -114,7 +114,6 @@ export function getTerminalTicket(terminalId, callback) {
 
 export function addOrderToTicket(ticket, productId, quantity = 1, callback) {
     var query = getAddOrderToTicketQuery(ticket, productId, quantity);
-    console.log(query);
     $.postJSON('/api/graphql/', { query: query }, function (response) {
         if (response.errors) {
             // handle errors
@@ -124,8 +123,8 @@ export function addOrderToTicket(ticket, productId, quantity = 1, callback) {
     });
 }
 
-export function addOrderToTerminalTicket(terminalId, productId, quantity = 1, callback) {
-    var query = getAddOrderToTerminalTicketScript(terminalId, productId);
+export function addOrderToTerminalTicket(terminalId, productId, quantity = 1, orderTags='', callback) {
+    var query = getAddOrderToTerminalTicketScript(terminalId, productId,orderTags);
     console.log(query);
     $.postJSON('/api/graphql/', { query: query }, function (response) {
         if (response.errors) {
@@ -148,6 +147,19 @@ export function updateOrderPortionOfTerminalTicket(terminalId, orderUid, portion
     });
 }
 
+export function getOrderTagColors(callback) {
+    var query = getGetOrderTagColorsScript();
+    console.log(query);
+    $.postJSON('/api/graphql/', { query: query }, function (response) {
+        if (response.errors) {
+            // handle errors
+        } else {
+            if (callback) callback(response.data.colors);
+        }
+    });
+}
+
+
 export function cancelOrderOnTerminalTicket(terminalId, orderUid, callback) {
     var query = getCancelOrderOnTerminalTicketScript(terminalId, orderUid);
     console.log(query);
@@ -161,7 +173,7 @@ export function cancelOrderOnTerminalTicket(terminalId, orderUid, callback) {
 }
 
 function getMenuScript() {
-    return `{menu:getMenu(name:"${menuName}"){categories{id,name,color,foreground,menuItems{id,name,color,foreground,productId}}}}`;
+    return `{menu:getMenu(name:"${menuName}"){categories{id,name,color,foreground,menuItems{id,name,color,foreground,productId,defaultOrderTags}}}}`;
 }
 
 function getProductPortionsScript(productId) {
@@ -215,11 +227,16 @@ function getGetTerminalExistsScript(terminalId) {
             result:getTerminalExists(terminalId:"${terminalId}")}`;
 }
 
-function getAddOrderToTerminalTicketScript(terminalId, productId) {
+function getAddOrderToTerminalTicketScript(terminalId, productId,orderTags) {
     return `mutation m{
             ticket:addOrderToTerminalTicket(terminalId:"${terminalId}",
-            productId:${productId})
+            productId:${productId}
+            orderTags:"${orderTags}")
         ${getTicketResult()}}`;
+}
+
+function getGetOrderTagColorsScript(){
+    return '{colors:getOrderTagColors{name,value}}';
 }
 
 function getTicketResult() {

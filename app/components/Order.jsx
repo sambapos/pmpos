@@ -2,6 +2,7 @@ import React from 'react';
 import {List, ListItem} from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 import Portions from './Portions';
+import OrderTags from './OrderTags';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import {getProductPortions} from '../queries';
@@ -17,17 +18,17 @@ export default class Order extends React.Component {
         this.state = { isDetailsOpen: false, portions: [{ name: 'loading...' }] };
     }
     render() {
-        const {id, name, quantity, price, priceTag, portion, productId, orderUid, onClick = () => { }, onCancelOrder = () => { } } = this.props;
+        const {id, name, quantity, price, priceTag, portion, productId, orderUid, orderTags, orderTagColors, onClick = () => { }, onCancelOrder = () => { } } = this.props;
         const detailActions = [
             <FlatButton
                 label="Remove Order"
                 primary={true}
-                onTouchTap={onCancelOrder.bind(null, orderUid) }
+                onClick={this.onOrderCancelled}
                 />,
             <FlatButton
                 label="Close"
                 primary={true}
-                onTouchTap={this.handleDetailsClose}
+                onClick={this.handleDetailsClose}
                 />
         ];
         var orderName = portion != 'Normal' ? name + '.' + portion : name;
@@ -42,12 +43,15 @@ export default class Order extends React.Component {
                             <span >{price}</span>
                         </span>
                     </div>
+                    <OrderTags orderTags={orderTags} 
+                        orderTagColors={orderTagColors}/>
                 </ListItem>
                 <Dialog
                     title={name}
                     actions={detailActions}
                     modal={true}
                     contentStyle={customContentStyle}
+                    autoScrollBodyContent={true}
                     open={this.state.isDetailsOpen}>
                     <Portions portions={this.state.portions}
                         selectedPortion={portion}
@@ -60,6 +64,11 @@ export default class Order extends React.Component {
 
     onPortionSelected = (name) => {
         this.props.onChangePortion(this.props.orderUid, name);
+        this.handleDetailsClose();
+    }
+
+    onOrderCancelled = () => {
+        this.props.onCancelOrder(this.props.orderUid);
         this.handleDetailsClose();
     }
 

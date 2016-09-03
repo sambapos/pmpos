@@ -12,7 +12,7 @@ import {getMenu, postRefresh,
     registerTerminal, createTerminalTicket, addOrderToTerminalTicket,
     getTerminalTicket, clearTerminalTicketOrders, closeTerminalTicket,
     getTerminalExists, updateOrderPortionOfTerminalTicket,
-    cancelOrderOnTerminalTicket} from '../queries';
+    cancelOrderOnTerminalTicket, getOrderTagColors} from '../queries';
 
 export default class App extends React.Component {
     constructor(props) {
@@ -27,6 +27,7 @@ export default class App extends React.Component {
             errorMessage: '',
             isMessageOpen: false,
             message: '',
+            orderTagColors: [],
             ticket: {
                 id: 10,
                 uid: 'CyB2Fj__vkO1wePOCG9kjQ',
@@ -92,6 +93,13 @@ export default class App extends React.Component {
 
     refreshMenu() {
         getMenu((menu) => {
+            getOrderTagColors((colors) => {
+                var result = colors.reduce(function (map, obj) {
+                    map[obj.name] = obj.value;
+                    return map;
+                }, {});
+                this.setState({ orderTagColors: result });
+            });
             this.setState({ menu: menu });
             if (menu.categories[0])
                 this.onCategoryClick(menu.categories[0].name);
@@ -105,7 +113,7 @@ export default class App extends React.Component {
     }
 
     render() {
-        const {menu, selectedCategory, menuItems, ticket} = this.state;
+        const {menu, selectedCategory, menuItems, ticket, orderTagColors} = this.state;
         return (
             <div className="mainDiv">
                 <Header header="New Ticket"/>
@@ -114,7 +122,8 @@ export default class App extends React.Component {
                     onCategoryClick={this.onCategoryClick}
                     menuItems={menuItems}
                     onMenuItemClick={this.onMenuItemClick}/>
-                <Orders ticket={ticket} 
+                <Orders ticket={ticket}
+                    orderTagColors={orderTagColors}
                     onChangePortion={this.changePortion}
                     onCancelOrder={this.cancelOrder} />
                 <TicketTags ticket={ticket}/>
@@ -137,9 +146,10 @@ export default class App extends React.Component {
         this.refreshMenuItems(category);
     }
 
-    onMenuItemClick = (productId) => {
-        addOrderToTerminalTicket(this.state.terminalId, productId, 1, (ticket) => {
+    onMenuItemClick = (productId, orderTags = '') => {
+        addOrderToTerminalTicket(this.state.terminalId, productId, 1, orderTags, (ticket) => {
             this.setState({ ticket: ticket, isMessageOpen: false });
+            console.log('Ticket', ticket);
         });
     }
 

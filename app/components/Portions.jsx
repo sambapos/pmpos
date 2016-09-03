@@ -10,7 +10,7 @@ export default class Portions extends React.Component {
       <div className="portions">
         {portions.map(({name, price}) =>
           <RaisedButton
-            style={{ 'margin': 4, 'min-width': '98%' }}
+            className="portionButton"
             label = {name + ' - ' + price.toFixed(2) }
             labelColor = {selectedPortion === name ? 'White' : 'Black'}
             key={name}

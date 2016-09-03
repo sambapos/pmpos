@@ -7,7 +7,7 @@ export default class MenuItems extends React.Component {
         return (
             <div className="menuItems">
                 {menuItems.map((menuItem) =>
-                    <MenuItem key={menuItem.productId} menuItem={menuItem} onClick={onClick}/>
+                    <MenuItem key={'mi_'+menuItem.id+'-'+menuItem.productId} menuItem={menuItem} onClick={onClick}/>
                 ) }
             </div>
         );

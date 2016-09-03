@@ -12,6 +12,7 @@ body {
   user-select:none;
   -o-user-select:none;
 }
+
 .mainDiv{
   display: flex;
   height: 100%;
@@ -19,7 +20,7 @@ body {
 }
 
 .menu {
-  height: 40%;
+  height: 33%;
   display: flex;
   flex-direction: column;
 }
@@ -34,7 +35,7 @@ body {
   display: flex;
   flex-wrap : wrap;
   overflow-Y: auto;
-  flex:1 3 77%;
+  flex:1;
   margin: 1px;
 }
 
@@ -56,10 +57,11 @@ body {
 }
 
 .menuButton {
-  width: 31%;
+  flex: 1 1 30%;
   margin: 3px;
   font-size: 1em;
   min-height: 75px;
+  display: flex;
 }
 
 .menuButton p{
@@ -69,10 +71,6 @@ body {
     left: 50%;
     margin-right: -50%;
     transform: translate(-50%, -50%)
-}
-
-.menuButton div{
-  height: 100%;
 }
 
 .order{
@@ -97,6 +95,26 @@ body {
   margin: 0px 5px; 
 }
 
+.orderTags{
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.orderTag{
+  font-size: 0.75em;
+  margin: 3px;
+  padding: 2px;
+  border-radius: 2px;
+  border: 1px gray solid;
+  background: lightgray;
+}
+
+.orderTagSection{
+  margin-right: 2px;
+  margin-left: 2px;
+}
+
 .ticketTotal{
   
 }
@@ -116,6 +134,17 @@ body {
   display: flex;
   font-size: 2em;
   font-weight: bold;  
+}
+
+.portions{
+  margin-top: 15px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.portionButton{
+  flex: 1 1 40%;
+  margin: 4px;
 }
 
 .mrkdwn p {

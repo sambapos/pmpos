@@ -46,6 +46,12 @@ exports.loadJSON = function () {
   };
 }
 
+exports.loadPolyfill = function () {
+  return {
+    entry: ['babel-polyfill', './app/components']
+  };
+}
+
 exports.loadIsparta = function (include) {
   return {
     module: {
