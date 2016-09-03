@@ -17,12 +17,12 @@ export default class Order extends React.Component {
         this.state = { isDetailsOpen: false, portions: [{ name: 'loading...' }] };
     }
     render() {
-        const {id, name, quantity, price, priceTag, portion, productId, onClick = () => { } } = this.props;
+        const {id, name, quantity, price, priceTag, portion, productId, orderUid, onClick = () => { }, onCancelOrder = () => { } } = this.props;
         const detailActions = [
             <FlatButton
                 label="Remove Order"
                 primary={true}
-                onTouchTap={this.handleDetailsClose}
+                onTouchTap={onCancelOrder.bind(null, orderUid) }
                 />,
             <FlatButton
                 label="Close"
@@ -59,7 +59,7 @@ export default class Order extends React.Component {
     }
 
     onPortionSelected = (name) => {
-        this.props.onChangePortion(this.props.orderUid,name);
+        this.props.onChangePortion(this.props.orderUid, name);
         this.handleDetailsClose();
     }
 

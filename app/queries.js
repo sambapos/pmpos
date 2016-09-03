@@ -1,12 +1,12 @@
 import $ from 'jquery';
 import jQuery from 'jquery';
 
-const serverUrl = 'http://localhost:9000'
+const serverUrl = 'http://192.168.1.10:9000'
 const terminaName = 'Server';
-const departmentName = 'Bar';
+const departmentName = 'Restaurant';
 const userName = 'Administrator';
 const ticketTypeName = 'Ticket';
-const menuName = 'Bar';
+const menuName = 'Menu';
 
 $.postJSON = function (url, data, callback) {
     return jQuery.ajax({
@@ -137,7 +137,7 @@ export function addOrderToTerminalTicket(terminalId, productId, quantity = 1, ca
 }
 
 export function updateOrderPortionOfTerminalTicket(terminalId, orderUid, portion, callback) {
-    var query = getUpdateOrderPortionOfTerminalTicketScript(terminalId, orderUid,portion);
+    var query = getUpdateOrderPortionOfTerminalTicketScript(terminalId, orderUid, portion);
     console.log(query);
     $.postJSON('/api/graphql/', { query: query }, function (response) {
         if (response.errors) {
@@ -148,7 +148,17 @@ export function updateOrderPortionOfTerminalTicket(terminalId, orderUid, portion
     });
 }
 
-
+export function cancelOrderOnTerminalTicket(terminalId, orderUid, callback) {
+    var query = getCancelOrderOnTerminalTicketScript(terminalId, orderUid);
+    console.log(query);
+    $.postJSON('/api/graphql/', { query: query }, function (response) {
+        if (response.errors) {
+            // handle errors
+        } else {
+            if (callback) callback(response.data.ticket);
+        }
+    });
+}
 
 function getMenuScript() {
     return `{menu:getMenu(name:"${menuName}"){categories{id,name,color,foreground,menuItems{id,name,color,foreground,productId}}}}`;
@@ -184,9 +194,14 @@ function getClearTerminalTicketScript(terminalId) {
         ${getTicketResult()}}`;
 }
 
-function getUpdateOrderPortionOfTerminalTicketScript(terminalId,orderUid,portion) {
+function getUpdateOrderPortionOfTerminalTicketScript(terminalId, orderUid, portion) {
     return `mutation m {ticket:updateOrderPortionOfTerminalTicket(
         terminalId:"${terminalId}",orderUid:"${orderUid}",portion:"${portion}")
+    ${getTicketResult()}}`;
+}
+
+function getCancelOrderOnTerminalTicketScript(terminalId, orderUid) {
+    return `mutation m{ticket:cancelOrderOnTerminalTicket(terminalId:"${terminalId}",orderUid:"${orderUid}")
     ${getTicketResult()}}`;
 }
 

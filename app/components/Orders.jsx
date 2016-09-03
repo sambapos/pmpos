@@ -4,7 +4,7 @@ import ReactDom from 'react-dom';
 
 export default class Orders extends React.Component {
     render() {
-        const {ticket, onClick = () => { }, onChangePortion = () => { } } = this.props;
+        const {ticket, onClick = () => { }, onChangePortion = () => { }, onCancelOrder = () => { } } = this.props;
         return (
             <div className="orders" id="orders">
                 {ticket.orders.map(({uid, name, quantity, price, priceTag, portion, productId}) =>
@@ -17,7 +17,8 @@ export default class Orders extends React.Component {
                         productId={productId}
                         onClick={onClick}
                         orderUid={uid}
-                        onChangePortion={onChangePortion}/>
+                        onChangePortion={onChangePortion}
+                        onCancelOrder={onCancelOrder}/>
                 ) }
             </div>
         );

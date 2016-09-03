@@ -11,7 +11,8 @@ import Snackbar from 'material-ui/Snackbar';
 import {getMenu, postRefresh,
     registerTerminal, createTerminalTicket, addOrderToTerminalTicket,
     getTerminalTicket, clearTerminalTicketOrders, closeTerminalTicket,
-    getTerminalExists,updateOrderPortionOfTerminalTicket} from '../queries';
+    getTerminalExists, updateOrderPortionOfTerminalTicket,
+    cancelOrderOnTerminalTicket} from '../queries';
 
 export default class App extends React.Component {
     constructor(props) {
@@ -107,13 +108,15 @@ export default class App extends React.Component {
         const {menu, selectedCategory, menuItems, ticket} = this.state;
         return (
             <div className="mainDiv">
-                <Header header={this.state.ticket.entityName}/>
+                <Header header="New Ticket"/>
                 <Menu categories={menu.categories}
                     selectedCategory={selectedCategory}
                     onCategoryClick={this.onCategoryClick}
                     menuItems={menuItems}
                     onMenuItemClick={this.onMenuItemClick}/>
-                <Orders ticket={ticket} onChangePortion={this.changePortion}/>
+                <Orders ticket={ticket} 
+                    onChangePortion={this.changePortion}
+                    onCancelOrder={this.cancelOrder} />
                 <TicketTags ticket={ticket}/>
                 <Commands commands = {[
                     { command: this.cleanTicket, caption: 'Clear Orders', color: 'White' },
@@ -162,7 +165,13 @@ export default class App extends React.Component {
 
     changePortion = (orderUid, portion) => {
         updateOrderPortionOfTerminalTicket(this.state.terminalId, orderUid, portion, (ticket) => {
-            this.setState({ticket});
+            this.setState({ ticket });
+        });
+    }
+
+    cancelOrder = (orderUid) => {
+        cancelOrderOnTerminalTicket(this.state.terminalId, orderUid, (ticket) => {
+            this.setState({ ticket });
         });
     }
 

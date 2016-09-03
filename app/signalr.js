@@ -2,7 +2,7 @@ import $ from 'jquery';
 window.jQuery = $;
 require('ms-signalr-client');
 
-const serverUrl = 'http://localhost:9000';
+const serverUrl = 'http://192.168.1.10:9000';
 
 export default class {
     static connect(callback) {
