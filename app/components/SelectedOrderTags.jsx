@@ -1,7 +1,7 @@
 import React from 'react';
 import Order from './Order';
 
-export default class OrderTags extends React.Component {
+export default class SelectedOrderTags extends React.Component {
     render() {
         const {orderTags} = this.props;
         if (!orderTags || orderTags.length === 0) return null;

@@ -2,7 +2,7 @@ import React from 'react';
 import {List, ListItem} from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 import Portions from './Portions';
-import OrderTags from './OrderTags';
+import SelectedOrderTags from './SelectedOrderTags';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import {getProductPortions} from '../queries';
@@ -43,7 +43,7 @@ export default class Order extends React.Component {
                             <span >{price}</span>
                         </span>
                     </div>
-                    <OrderTags orderTags={orderTags} 
+                    <SelectedOrderTags orderTags={orderTags}
                         orderTagColors={orderTagColors}/>
                 </ListItem>
                 <Dialog
@@ -63,8 +63,8 @@ export default class Order extends React.Component {
     }
 
     onPortionSelected = (name) => {
-        this.props.onChangePortion(this.props.orderUid, name);
-        this.handleDetailsClose();
+        this.props.onChangePortion(this.props.orderUid, name, 
+            () => this.handleDetailsClose());
     }
 
     onOrderCancelled = () => {

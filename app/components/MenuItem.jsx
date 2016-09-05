@@ -9,7 +9,6 @@ export default class MenuItem extends React.Component {
             'display': 'flex',
             'flex':'1',
             'height':'auto'
-
         };
         const style2 = {
             'color': menuItem.foreground,
@@ -17,7 +16,7 @@ export default class MenuItem extends React.Component {
         };
         return (
             <div className='menuButton'>
-                <RaisedButton 
+                <RaisedButton
                     backgroundColor={ menuItem.color ? menuItem.color : ''}
                     onClick={onClick.bind(null, menuItem.productId,menuItem.defaultOrderTags) }
                     style={style}>

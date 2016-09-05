@@ -173,9 +173,10 @@ export default class App extends React.Component {
         });
     }
 
-    changePortion = (orderUid, portion) => {
+    changePortion = (orderUid, portion, callback) => {
         updateOrderPortionOfTerminalTicket(this.state.terminalId, orderUid, portion, (ticket) => {
             this.setState({ ticket });
+            if (callback) callback();
         });
     }
 
