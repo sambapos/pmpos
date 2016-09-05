@@ -145,6 +145,7 @@ body {
 .portionButton{
   flex: 1 1 40%;
   margin: 4px;
+  display: flex;
 }
 
 .mrkdwn p {
