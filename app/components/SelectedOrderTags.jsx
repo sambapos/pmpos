@@ -6,9 +6,9 @@ export default class SelectedOrderTags extends React.Component {
         const {orderTags} = this.props;
         if (!orderTags || orderTags.length === 0) return null;
         return (
-            <div className="orderTags" >
+            <div className="selectedOrderTags" >
                 {orderTags.map(({tag, tagName, price, quantity}) =>
-                    <div className='orderTag' key={tag} style={{ 'backgroundColor': this.getColor(tag) }}>
+                    <div className='selectedOrderTag' key={tag} style={{ 'backgroundColor': this.getColor(tag) }}>
                         <span className='orderTagQuantity orderTagSection'>{quantity > 1 ? quantity + ' x' : ''}</span>
                         <span className='orderTagName orderTagSection'>{tag}</span>
                         <span className='orderTagPrice orderTagSection'>{price > 0 ? price.toFixed(2) : '' }</span>

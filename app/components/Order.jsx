@@ -2,20 +2,24 @@ import React from 'react';
 import {List, ListItem} from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 import Portions from './Portions';
+import OrderTags from './OrderTags';
 import SelectedOrderTags from './SelectedOrderTags';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-import {getProductPortions} from '../queries';
+import {getProductPortions, getOrderTagsForTerminal} from '../queries';
 
 const customContentStyle = {
-    width: '95%',
-    maxWidth: 'none'
+    'width': '95%'
 };
 
 export default class Order extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { isDetailsOpen: false, portions: [{ name: 'loading...' }] };
+        this.state = {
+            isDetailsOpen: false,
+            portions: [{ name: 'loading...' }],
+            orderTags: [{ name: 'loading...', price: 1 }]
+        };
     }
     render() {
         const {id, name, quantity, price, priceTag, portion, productId, orderUid, orderTags, orderTagColors, onClick = () => { }, onCancelOrder = () => { } } = this.props;
@@ -31,10 +35,15 @@ export default class Order extends React.Component {
                 onClick={this.handleDetailsClose}
                 />
         ];
+        const title = 
+            <div>{name}                    
+                <SelectedOrderTags orderTags={orderTags}
+                                orderTagColors={orderTagColors}/>
+            </div>;
         var orderName = portion != 'Normal' ? name + '.' + portion : name;
         return (
             <div key={id}>
-                <ListItem  className="order" onClick={this.handleDetailsOpen.bind(null, productId) }>
+                <ListItem  className="order" onClick={this.handleDetailsOpen.bind(null, productId, portion) }>
                     <div className="order">
                         <span className="orderQuantity">{quantity}</span>
                         <span className="orderName">{orderName}</span>
@@ -47,15 +56,19 @@ export default class Order extends React.Component {
                         orderTagColors={orderTagColors}/>
                 </ListItem>
                 <Dialog
-                    title={name}
+                    title={title}
                     actions={detailActions}
                     modal={true}
                     contentStyle={customContentStyle}
                     autoScrollBodyContent={true}
                     open={this.state.isDetailsOpen}>
-                    <Portions portions={this.state.portions}
-                        selectedPortion={portion}
-                        onClick={this.onPortionSelected}/>
+                    <div className='dialogContent'>
+                        <Portions portions={this.state.portions}
+                            selectedPortion={portion}
+                            onClick={this.onPortionSelected}/>
+                        <OrderTags orderTags={this.state.orderTags}
+                            onClick={this.onOrderTagSelected}/>
+                    </div>
                 </Dialog>
                 <Divider/>
             </div>
@@ -63,8 +76,16 @@ export default class Order extends React.Component {
     }
 
     onPortionSelected = (name) => {
-        this.props.onChangePortion(this.props.orderUid, name, 
+        this.props.onChangePortion(this.props.orderUid, name,
             () => this.handleDetailsClose());
+    }
+
+    onOrderTagSelected = (name, tag) => {
+        this.props.onOrderTagSelected(this.props.orderUid, name, tag, (ticket) => {
+            this.props.getOrderTags(this.props.orderUid, (orderTags) => {
+                this.setState({ orderTags: orderTags, isDetailsOpen:true });
+            });
+        });
     }
 
     onOrderCancelled = () => {
@@ -72,9 +93,12 @@ export default class Order extends React.Component {
         this.handleDetailsClose();
     }
 
-    handleDetailsOpen = (productId) => {
+    handleDetailsOpen = (productId, portion) => {
         getProductPortions(productId, (portions) => {
             this.setState({ isDetailsOpen: true, portions: portions });
+        });
+        this.props.getOrderTags(this.props.orderUid, (orderTags) => {
+            this.setState({ orderTags: orderTags });
         });
     };
 

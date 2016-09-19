@@ -11,10 +11,10 @@ export default class Portions extends React.Component {
       <div className="portions">
         {portions.map(({name, price}) =>
           <Portion key={name}
-              name={name} 
-              price={price}
-              onClick={onClick}
-              isSelected={selectedPortion == name?true:false}/>
+            name={name}
+            price={price}
+            onClick={onClick}
+            isSelected={selectedPortion == name ? true : false}/>
         ) }
       </div>
     );

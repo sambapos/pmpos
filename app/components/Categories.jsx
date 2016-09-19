@@ -8,7 +8,7 @@ export default class Categories extends React.Component {
             <div className="categories" id="categories">
                 {categories.map(({id, name, color, foreground}) =>
                     <RaisedButton
-                        style={{'margin':2}}
+                        style={{'margin':4}}
                         label = {selectedCategory === name ? <b>-{name}-</b> : name}
                         labelColor = {foreground}
                         key={id}

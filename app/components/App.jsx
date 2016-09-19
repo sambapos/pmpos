@@ -8,11 +8,13 @@ import TicketTags from './TicketTags';
 import Commands from './Commands';
 import Signalr from '../signalr';
 import Snackbar from 'material-ui/Snackbar';
+import Paper from 'material-ui/Paper';
 import {getMenu, postRefresh,
     registerTerminal, createTerminalTicket, addOrderToTerminalTicket,
     getTerminalTicket, clearTerminalTicketOrders, closeTerminalTicket,
     getTerminalExists, updateOrderPortionOfTerminalTicket,
-    cancelOrderOnTerminalTicket, getOrderTagColors} from '../queries';
+    cancelOrderOnTerminalTicket, getOrderTagColors, getOrderTagsForTerminal,
+    updateOrderTagOfTerminalTicket} from '../queries';
 
 export default class App extends React.Component {
     constructor(props) {
@@ -125,7 +127,9 @@ export default class App extends React.Component {
                 <Orders ticket={ticket}
                     orderTagColors={orderTagColors}
                     onChangePortion={this.changePortion}
-                    onCancelOrder={this.cancelOrder} />
+                    getOrderTags={this.getOrderTags}
+                    onCancelOrder={this.cancelOrder}
+                    onOrderTagSelected={this.onOrderTagSelected} />
                 <TicketTags ticket={ticket}/>
                 <Commands commands = {[
                     { command: this.cleanTicket, caption: 'Clear Orders', color: 'White' },
@@ -141,6 +145,19 @@ export default class App extends React.Component {
         );
     }
 
+    getOrderTags = (orderUid, callback) => {
+        getOrderTagsForTerminal(this.state.terminalId, orderUid, (orderTags) => {
+            callback(orderTags);
+        })
+    }
+
+    onOrderTagSelected = (orderUid, name, tag, callback) => {
+        updateOrderTagOfTerminalTicket(this.state.terminalId, orderUid, name, tag, (ticket) => {
+            this.setState({ ticket: ticket });
+            callback(ticket);
+        });
+    }
+
     onCategoryClick = (category) => {
         this.setState({ selectedCategory: category, isMessageOpen: false });
         this.refreshMenuItems(category);
@@ -149,7 +166,6 @@ export default class App extends React.Component {
     onMenuItemClick = (productId, orderTags = '') => {
         addOrderToTerminalTicket(this.state.terminalId, productId, 1, orderTags, (ticket) => {
             this.setState({ ticket: ticket, isMessageOpen: false });
-            console.log('Ticket', ticket);
         });
     }
 

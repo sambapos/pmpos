@@ -8,11 +8,16 @@ export default class MenuItem extends React.Component {
         const style = {
             'display': 'flex',
             'flex':'1',
-            'height':'auto'
+            'height':'75px'
         };
         const style2 = {
             'color': menuItem.foreground,
-            'flex':'1'
+            'flex':'1',
+            'position':'absolute',
+            'top':'0',
+            'left':'0',
+            'height':'100%',
+            'width':'100%'
         };
         return (
             <div className='menuButton'>

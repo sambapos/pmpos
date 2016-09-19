@@ -1,12 +1,13 @@
 import React from 'react';
 import Order from './Order';
 import ReactDom from 'react-dom';
+import Paper from 'material-ui/Paper';
 
 export default class Orders extends React.Component {
     render() {
-        const {ticket,orderTagColors, onClick = () => { }, onChangePortion = () => { }, onCancelOrder = () => { } } = this.props;
+        const {ticket, orderTagColors, onClick = () => { }, onChangePortion = () => { }, onCancelOrder = () => { }, onOrderTagSelected = () => { } } = this.props;
         return (
-            <div className="orders" id="orders">
+            <Paper className="orders" id="orders">
                 {ticket.orders.map(({uid, name, quantity, price, priceTag, portion, productId, tags}) =>
                     <Order key={uid}
                         name={name}
@@ -19,10 +20,12 @@ export default class Orders extends React.Component {
                         orderTagColors={orderTagColors}
                         onClick={onClick}
                         orderUid={uid}
+                        getOrderTags = {this.props.getOrderTags}
                         onChangePortion={onChangePortion}
+                        onOrderTagSelected={onOrderTagSelected}
                         onCancelOrder={onCancelOrder}/>
                 ) }
-            </div>
+            </Paper>
         );
     }
 

@@ -23,6 +23,13 @@ body {
   height: 35%;
   display: flex;
   flex-direction: column;
+  margin:4px;
+}
+
+.orders{
+  flex:1 3 40%;
+  overflow-x: auto;
+  margin: 4px;
 }
 
 .categories {
@@ -39,11 +46,6 @@ body {
   margin: 1px;
 }
 
-.orders{
-  flex:1 3 40%;
-  overflow-x: auto;
-}
-
 .commands{
   padding:0px;
 }
@@ -57,10 +59,9 @@ body {
 }
 
 .menuButton {
-  flex: 1 1 30%;
-  margin: 3px;
+  flex: 1 1 40%;
+  margin: 4px;
   font-size: 1em;
-  min-height: 75px;
   display: flex;
 }
 
@@ -70,7 +71,7 @@ body {
     top: 50%;
     left: 50%;
     margin-right: -50%;
-    transform: translate(-50%, -50%)
+    transform: translate(-50%, -50%);
 }
 
 .order{
@@ -82,7 +83,7 @@ body {
 }
 
 .orderName{
-  width: 60%;
+  width: 90%;
 }
 
 .orderPrice{
@@ -95,19 +96,21 @@ body {
   margin: 0px 5px; 
 }
 
-.orderTags{
+.selectedOrderTags{
   margin-top: 8px;
   display: flex;
   flex-wrap: wrap;
+  line-height: initial;
+  font-size:initial;
 }
 
-.orderTag{
-  font-size: 0.75em;
+.selectedOrderTag{
   margin: 3px;
   padding: 2px;
   border-radius: 2px;
   border: 1px gray solid;
   background: lightgray;
+  font-size: 0.75em;
 }
 
 .orderTagSection{
@@ -137,15 +140,39 @@ body {
 }
 
 .portions{
-  margin-top: 15px;
+  margin-top:15px;
   display: flex;
   flex-wrap: wrap;
 }
 
 .portionButton{
-  flex: 1 1 40%;
+  flex: 1 1 30%;
   margin: 4px;
   display: flex;
+}
+
+.orderTagGroup{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.orderTagButton{
+  flex:1 1 30%; 
+  margin:4px;
+  height: 50px;
+}
+
+.orderTagButtonContent{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+}
+
+.dialogContent{
+  
 }
 
 .mrkdwn p {

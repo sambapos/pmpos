@@ -46,6 +46,17 @@ export function getProductPortions(productId, callback) {
     });
 }
 
+export function getProductOrderTags(productId, portion, callback) {
+    var query = getProductOrderTagsScript(productId, portion);
+    $.postJSON('/api/graphql', { query: query }, function (response) {
+        if (response.errors) {
+            //handle
+        } else {
+            if (callback) callback(response.data.orderTags);
+        }
+    });
+}
+
 export function registerTerminal(callback) {
     var query = getRegisterTerminalScript();
     $.postJSON('/api/graphql', { query: query }, function (response) {
@@ -123,9 +134,8 @@ export function addOrderToTicket(ticket, productId, quantity = 1, callback) {
     });
 }
 
-export function addOrderToTerminalTicket(terminalId, productId, quantity = 1, orderTags='', callback) {
-    var query = getAddOrderToTerminalTicketScript(terminalId, productId,orderTags);
-    console.log(query);
+export function addOrderToTerminalTicket(terminalId, productId, quantity = 1, orderTags = '', callback) {
+    var query = getAddOrderToTerminalTicketScript(terminalId, productId, orderTags);
     $.postJSON('/api/graphql/', { query: query }, function (response) {
         if (response.errors) {
             // handle errors
@@ -137,7 +147,6 @@ export function addOrderToTerminalTicket(terminalId, productId, quantity = 1, or
 
 export function updateOrderPortionOfTerminalTicket(terminalId, orderUid, portion, callback) {
     var query = getUpdateOrderPortionOfTerminalTicketScript(terminalId, orderUid, portion);
-    console.log(query);
     $.postJSON('/api/graphql/', { query: query }, function (response) {
         if (response.errors) {
             // handle errors
@@ -147,9 +156,30 @@ export function updateOrderPortionOfTerminalTicket(terminalId, orderUid, portion
     });
 }
 
+export function updateOrderTagOfTerminalTicket(terminalId, orderUid, name, tag, callback) {
+    var query = getUpdateOrderTagOfTerminalTicketScript(terminalId, orderUid, name, tag);
+    $.postJSON('/api/graphql/', { query: query }, function (response) {
+        if (response.errors) {
+            // handle errors
+        } else {
+            if (callback) callback(response.data.ticket);
+        }
+    });
+}
+
+export function getOrderTagsForTerminal(terminalId, orderUid, callback) {
+    var query = getGetOrderTagsForTerminalScript(terminalId, orderUid);
+    $.postJSON('/api/graphql/', { query: query }, function (response) {
+        if (response.errors) {
+            // handle errors
+        } else {
+            if (callback) callback(response.data.orderTags);
+        }
+    });
+}
+
 export function getOrderTagColors(callback) {
     var query = getGetOrderTagColorsScript();
-    console.log(query);
     $.postJSON('/api/graphql/', { query: query }, function (response) {
         if (response.errors) {
             // handle errors
@@ -159,10 +189,8 @@ export function getOrderTagColors(callback) {
     });
 }
 
-
 export function cancelOrderOnTerminalTicket(terminalId, orderUid, callback) {
     var query = getCancelOrderOnTerminalTicketScript(terminalId, orderUid);
-    console.log(query);
     $.postJSON('/api/graphql/', { query: query }, function (response) {
         if (response.errors) {
             // handle errors
@@ -178,6 +206,18 @@ function getMenuScript() {
 
 function getProductPortionsScript(productId) {
     return `{portions:getProductPortions(productId:${productId}){id,name,price}}`;
+}
+
+function getProductOrderTagsScript(productId, portion) {
+    return `{orderTags:getOrderTagGroups(productId:${productId},portion:"${portion}",hidden:false){name,tags{name}}}`;
+}
+
+function getGetOrderTagsForTerminalScript(terminalId, orderUid){
+    return `
+    mutation tags{orderTags:getOrderTagsForTerminalTicketOrder(
+        terminalId:"${terminalId}"
+	    orderUid:"${orderUid}")
+    {name,tags{caption,color,labelColor,name}}}`;
 }
 
 function getRegisterTerminalScript() {
@@ -212,6 +252,14 @@ function getUpdateOrderPortionOfTerminalTicketScript(terminalId, orderUid, porti
     ${getTicketResult()}}`;
 }
 
+function getUpdateOrderTagOfTerminalTicketScript(terminalId, orderUid, name, tag) {
+    return `mutation m{ticket:updateOrderTagOfTerminalTicket(
+        terminalId:"${terminalId}",
+        orderUid:"${orderUid}",
+	    orderTags:[{tagName:"${name}",tag:"${tag}"}])
+    ${getTicketResult()}}`;
+}
+
 function getCancelOrderOnTerminalTicketScript(terminalId, orderUid) {
     return `mutation m{ticket:cancelOrderOnTerminalTicket(terminalId:"${terminalId}",orderUid:"${orderUid}")
     ${getTicketResult()}}`;
@@ -227,7 +275,7 @@ function getGetTerminalExistsScript(terminalId) {
             result:getTerminalExists(terminalId:"${terminalId}")}`;
 }
 
-function getAddOrderToTerminalTicketScript(terminalId, productId,orderTags) {
+function getAddOrderToTerminalTicketScript(terminalId, productId, orderTags) {
     return `mutation m{
             ticket:addOrderToTerminalTicket(terminalId:"${terminalId}",
             productId:${productId}
@@ -235,7 +283,7 @@ function getAddOrderToTerminalTicketScript(terminalId, productId,orderTags) {
         ${getTicketResult()}}`;
 }
 
-function getGetOrderTagColorsScript(){
+function getGetOrderTagColorsScript() {
     return '{colors:getOrderTagColors{name,value}}';
 }
 
