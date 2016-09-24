@@ -73,7 +73,7 @@ switch (TARGET) {
       ),
       parts.extractBundle({
         name: 'vendor',
-        entries: ['react', 'react-dom']
+        entries: ['react', 'react-dom', 'material-ui']
       }),
       parts.minify(),
       parts.extractCSS(PATHS.style)

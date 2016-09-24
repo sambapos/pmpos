@@ -21,7 +21,7 @@ export default class OrderTagGroup extends React.Component {
         };
 
         var items = tags.map(({name, color, labelColor, caption}) =>
-            <OrderTag key={name}
+            <OrderTag key={name + this.props.name}
                 name={name}
                 groupName={this.props.name}
                 caption={caption}

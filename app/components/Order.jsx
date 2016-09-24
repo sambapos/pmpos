@@ -35,28 +35,30 @@ export default class Order extends React.Component {
                 onClick={this.handleDetailsClose}
                 />
         ];
-        const title = 
-            <div>{name}                    
-                <SelectedOrderTags orderTags={orderTags}
-                                orderTagColors={orderTagColors}/>
-            </div>;
+
         var orderName = portion != 'Normal' ? name + '.' + portion : name;
+
+        const orderLine =
+            <div>
+                <div className="order">
+                    <span className="orderQuantity">{quantity}</span>
+                    <span className="orderName">{orderName}</span>
+                    <span className="orderPrice">
+                        <span className="orderPriceTag">{priceTag}</span>
+                        <span >{price}</span>
+                    </span>
+                </div>
+                <SelectedOrderTags orderTags={orderTags}
+                    orderTagColors={orderTagColors}/>
+            </div>;
+
         return (
             <div key={id}>
                 <ListItem  className="order" onClick={this.handleDetailsOpen.bind(null, productId, portion) }>
-                    <div className="order">
-                        <span className="orderQuantity">{quantity}</span>
-                        <span className="orderName">{orderName}</span>
-                        <span className="orderPrice">
-                            <span className="orderPriceTag">{priceTag}</span>
-                            <span >{price}</span>
-                        </span>
-                    </div>
-                    <SelectedOrderTags orderTags={orderTags}
-                        orderTagColors={orderTagColors}/>
+                    {orderLine}
                 </ListItem>
                 <Dialog
-                    title={title}
+                    title={orderLine}
                     actions={detailActions}
                     modal={true}
                     contentStyle={customContentStyle}
@@ -83,7 +85,7 @@ export default class Order extends React.Component {
     onOrderTagSelected = (name, tag) => {
         this.props.onOrderTagSelected(this.props.orderUid, name, tag, (ticket) => {
             this.props.getOrderTags(this.props.orderUid, (orderTags) => {
-                this.setState({ orderTags: orderTags, isDetailsOpen:true });
+                this.setState({ orderTags: orderTags, isDetailsOpen: true });
             });
         });
     }

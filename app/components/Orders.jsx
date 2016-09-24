@@ -2,6 +2,7 @@ import React from 'react';
 import Order from './Order';
 import ReactDom from 'react-dom';
 import Paper from 'material-ui/Paper';
+import {postRefresh} from '../queries';
 
 export default class Orders extends React.Component {
     render() {
