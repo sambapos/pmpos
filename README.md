@@ -1,2 +1,2 @@
 # pmpos
-PM POS
+PM POS for SambaPOS
