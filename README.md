@@ -3,7 +3,7 @@ WebPOS Project for SambaPOS
 
 #Installation
 - Install NodeJS (https://nodejs.org/)
-- Install Git and choose Use Git from the Windows Command Prompt option: `https://git-scm.com`
+- Install Git and choose Use Git from the Windows Command Prompt option: (https://git-scm.com)
 - run `git clone https://github.com/sambapos/pmpos.git` command to download project. 
 - run `npm install` command under project folder to install libraries.
 - `npm run start` will start dev server on 8080 port.
