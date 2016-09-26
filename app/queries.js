@@ -3,7 +3,7 @@ import jQuery from 'jquery';
 
 const serverUrl = 'http://localhost:9000'
 const terminaName = 'Server';
-const departmentName = 'Restaurant';
+const departmentName = 'Pizza Delivery';
 const userName = 'Administrator';
 const ticketTypeName = 'Ticket';
 const menuName = 'Menu';
