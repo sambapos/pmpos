@@ -1,5 +1,5 @@
 # PMPOS
-WebPOS Project for SambaPOS
+Reactjs based WebPOS Project for SambaPOS
 
 #Installation
 - Install NodeJS (https://nodejs.org/)
