@@ -7,9 +7,15 @@ import {List, ListItem} from 'material-ui/List';
 import OrderTag from './OrderTag';
 import Divider from 'material-ui/Divider';
 import Paper from 'material-ui/Paper';
-
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 
 export default class OrderTagGroup extends React.Component {
+    
+    constructor(props) {
+        super(props);
+        this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+    }
+
     render() {
         const {name, tags = [], onClick = () => { } } = this.props;
         const style = {
