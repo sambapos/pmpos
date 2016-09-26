@@ -79,7 +79,12 @@ export default class Order extends React.Component {
 
     onPortionSelected = (name) => {
         this.props.onChangePortion(this.props.orderUid, name,
-            () => this.handleDetailsClose());
+            () => {
+                if (this.state.orderTags && this.state.orderTags.length > 0)
+                    this.handleDetailsOpen(this.props.productId, name);
+                else
+                    this.handleDetailsClose();
+            });
     }
 
     onOrderTagSelected = (name, tag) => {
