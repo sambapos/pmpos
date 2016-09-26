@@ -14,4 +14,5 @@ Reactjs based WebPOS Project for SambaPOS
 - Edit app > signalr.js and set `serverUrl` constant to setup SignalR Server.
 
 #Contributors
-Emre Eren (https://github.com/emreeren)
+Emre Eren (https://github.com/emreeren)  
+Jesse Parker (https://github.com/kendash)
