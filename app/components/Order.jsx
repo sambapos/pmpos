@@ -7,6 +7,7 @@ import SelectedOrderTags from './SelectedOrderTags';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import {getProductPortions, getOrderTagsForTerminal} from '../queries';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 
 const customContentStyle = {
     'width': '95%'
@@ -17,9 +18,11 @@ export default class Order extends React.Component {
         super(props);
         this.state = {
             isDetailsOpen: false,
+            selectedPortion: '',
             portions: [{ name: 'loading...' }],
             orderTags: [{ name: 'loading...', price: 1 }]
         };
+        this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
     }
     render() {
         const {id, name, quantity, price, priceTag, portion, productId, orderUid, orderTags, orderTagColors, onClick = () => { }, onCancelOrder = () => { } } = this.props;
@@ -27,13 +30,11 @@ export default class Order extends React.Component {
             <FlatButton
                 label="Remove Order"
                 primary={true}
-                onClick={this.onOrderCancelled}
-                />,
+                onClick={this.onOrderCancelled}/>,
             <FlatButton
                 label="Close"
                 primary={true}
-                onClick={this.handleDetailsClose}
-                />
+                onClick={this.handleDetailsClose}/>
         ];
 
         var orderName = portion != 'Normal' ? name + '.' + portion : name;
@@ -66,7 +67,7 @@ export default class Order extends React.Component {
                     open={this.state.isDetailsOpen}>
                     <div className='dialogContent'>
                         <Portions portions={this.state.portions}
-                            selectedPortion={portion}
+                            selectedPortion={this.state.selectedPortion}
                             onClick={this.onPortionSelected}/>
                         <OrderTags orderTags={this.state.orderTags}
                             onClick={this.onOrderTagSelected}/>
@@ -80,8 +81,11 @@ export default class Order extends React.Component {
     onPortionSelected = (name) => {
         this.props.onChangePortion(this.props.orderUid, name,
             () => {
-                if (this.state.orderTags && this.state.orderTags.length > 0)
-                    this.handleDetailsOpen(this.props.productId, name);
+                if (this.state.orderTags && this.state.orderTags.length > 0) {
+                    this.props.getOrderTags(this.props.orderUid, (orderTags) => {
+                        this.setState({ orderTags: orderTags, selectedPortion: name });
+                    });
+                }
                 else
                     this.handleDetailsClose();
             });
@@ -102,7 +106,7 @@ export default class Order extends React.Component {
 
     handleDetailsOpen = (productId, portion) => {
         getProductPortions(productId, (portions) => {
-            this.setState({ isDetailsOpen: true, portions: portions });
+            this.setState({ isDetailsOpen: true, portions: portions, selectedPortion: portion });
         });
         this.props.getOrderTags(this.props.orderUid, (orderTags) => {
             this.setState({ orderTags: orderTags });

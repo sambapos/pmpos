@@ -61,6 +61,7 @@
     "material-ui": "^0.15.4",
     "ms-signalr-client": "^2.2.3",
     "react": "^15.1.0",
+    "react-addons-pure-render-mixin": "^15.3.2",
     "react-dom": "^15.1.0",
     "react-markdown": "^2.4.2",
     "react-tap-event-plugin": "^1.0.0",
