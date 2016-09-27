@@ -117,19 +117,21 @@ export default class App extends React.Component {
     render() {
         const {menu, selectedCategory, menuItems, ticket, orderTagColors} = this.state;
         return (
-            <div className="mainDiv">
-                <Header header="New Ticket"/>
-                <Menu categories={menu.categories}
-                    selectedCategory={selectedCategory}
-                    onCategoryClick={this.onCategoryClick}
-                    menuItems={menuItems}
-                    onMenuItemClick={this.onMenuItemClick}/>
-                <Orders ticket={ticket}
-                    orderTagColors={orderTagColors}
-                    onChangePortion={this.changePortion}
-                    getOrderTags={this.getOrderTags}
-                    onCancelOrder={this.cancelOrder}
-                    onOrderTagSelected={this.onOrderTagSelected} />
+            <div className = "mainDiv">
+                <Header header = "New Ticket"/>
+                <div className = "mainBody">
+                    <Menu categories={menu.categories}
+                        selectedCategory={selectedCategory}
+                        onCategoryClick={this.onCategoryClick}
+                        menuItems={menuItems}
+                        onMenuItemClick={this.onMenuItemClick}/>
+                    <Orders ticket={ticket}
+                        orderTagColors={orderTagColors}
+                        onChangePortion={this.changePortion}
+                        getOrderTags={this.getOrderTags}
+                        onCancelOrder={this.cancelOrder}
+                        onOrderTagSelected={this.onOrderTagSelected} />
+                </div>
                 <TicketTags ticket={ticket}/>
                 <Commands commands = {[
                     { command: this.cleanTicket, caption: 'Clear Orders', color: 'White' },
