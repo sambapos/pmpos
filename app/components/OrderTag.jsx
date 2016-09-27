@@ -3,13 +3,12 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import ReactMarkdown from 'react-markdown';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
 
 export default class OrderTag extends React.Component {
-    
-    constructor(props) {
-        super(props);
-        this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+
+    shouldComponentUpdate(nextProps, nextState) {
+        if (this.props.caption === nextProps.caption && this.props.color === nextProps.color) return false;
+        return true;
     }
 
     render() {
