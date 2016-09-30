@@ -16,3 +16,4 @@ Reactjs based WebPOS Project for SambaPOS
 #Contributors
 Emre Eren (https://github.com/emreeren)  
 Jesse Parker (https://github.com/kendash)
+Q McKay (https://github.com/QTMcKay)
