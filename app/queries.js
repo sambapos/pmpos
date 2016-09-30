@@ -1,12 +1,15 @@
 import $ from 'jquery';
 import jQuery from 'jquery';
+import {appconfig} from './config';
 
-const serverUrl = 'http://localhost:9000'
-const terminaName = 'Server';
-const departmentName = 'Restaurant';
-const userName = 'Administrator';
-const ticketTypeName = 'Ticket';
-const menuName = 'Menu';
+var config = appconfig();
+
+const serverUrl = config.GQLserv;
+const terminaName = config.terminalName;
+const departmentName = config.departmentName;
+const userName = config.userName;
+const ticketTypeName = config.ticketTypeName;
+const menuName = config.menuName;
 
 $.postJSON = function (url, data, callback) {
     return jQuery.ajax({
