@@ -207,7 +207,7 @@ body {
 }
 
 .portionButton{
-  flex: 1 1 30%;
+  flex: 1 1 10%;
   margin: 4px;
   display: flex;
 }
@@ -219,7 +219,7 @@ body {
 }
 
 .orderTagButton{
-  flex:1 1 30%; 
+  flex:1 1 10%; 
   margin:4px;
   height: 50px;
 }
