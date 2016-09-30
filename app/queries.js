@@ -1,32 +1,29 @@
 import $ from 'jquery';
 import jQuery from 'jquery';
+import {appconfig} from './config';
 
-const serverUrl = 'http://localhost:9000'
-const terminaName = 'Server';
-const departmentName = 'Restaurant';
-const userName = 'Administrator';
-const ticketTypeName = 'Ticket';
-const menuName = 'Menu';
+var config = appconfig();
 
-$.postJSON = function (url, data, callback) {
+$.postJSON = function (query, callback) {
+    var data = JSON.stringify({ query: query });
     return jQuery.ajax({
         'type': 'POST',
-        'url': serverUrl + url,
+        'url': config.GQLurl,
         'contentType': 'application/json',
-        'data': JSON.stringify(data),
+        'data': data,
         'dataType': 'json',
         'success': callback
     });
 };
 
 export function postRefresh() {
-    var updateQuery = 'mutation m{postTicketRefreshMessage(id:0){id}}';
-    $.postJSON('/api/graphql', { query: updateQuery });
+    var query = 'mutation m{postTicketRefreshMessage(id:0){id}}';
+    $.postJSON(query);
 }
 
 export function getMenu(callback) {
     var query = getMenuScript();
-    $.postJSON('/api/graphql', { query: query }, function (response) {
+    $.postJSON(query, function (response) {
         if (response.errors) {
             //handle
         } else {
@@ -37,7 +34,7 @@ export function getMenu(callback) {
 
 export function getProductPortions(productId, callback) {
     var query = getProductPortionsScript(productId);
-    $.postJSON('/api/graphql', { query: query }, function (response) {
+    $.postJSON(query, function (response) {
         if (response.errors) {
             //handle
         } else {
@@ -48,7 +45,7 @@ export function getProductPortions(productId, callback) {
 
 export function getProductOrderTags(productId, portion, callback) {
     var query = getProductOrderTagsScript(productId, portion);
-    $.postJSON('/api/graphql', { query: query }, function (response) {
+    $.postJSON(query, function (response) {
         if (response.errors) {
             //handle
         } else {
@@ -59,7 +56,7 @@ export function getProductOrderTags(productId, portion, callback) {
 
 export function registerTerminal(callback) {
     var query = getRegisterTerminalScript();
-    $.postJSON('/api/graphql', { query: query }, function (response) {
+    $.postJSON(query, function (response) {
         if (response.errors) {
             //handle
         } else {
@@ -70,7 +67,7 @@ export function registerTerminal(callback) {
 
 export function createTerminalTicket(terminalId, callback) {
     var query = getCreateTerminalTicketScript(terminalId);
-    $.postJSON('/api/graphql', { query: query }, function (response) {
+    $.postJSON(query, function (response) {
         if (response.errors) {
             //handle
         } else {
@@ -81,7 +78,7 @@ export function createTerminalTicket(terminalId, callback) {
 
 export function clearTerminalTicketOrders(terminalId, callback) {
     var query = getClearTerminalTicketScript(terminalId);
-    $.postJSON('/api/graphql', { query: query }, function (response) {
+    $.postJSON(query, function (response) {
         if (response.errors) {
             //handle
         } else {
@@ -92,7 +89,7 @@ export function clearTerminalTicketOrders(terminalId, callback) {
 
 export function closeTerminalTicket(terminalId, callback) {
     var query = getCloseTerminalTicketScript(terminalId);
-    $.postJSON('/api/graphql', { query: query }, function (response) {
+    $.postJSON(query, function (response) {
         if (response.errors) {
             //handle
         } else {
@@ -103,7 +100,7 @@ export function closeTerminalTicket(terminalId, callback) {
 
 export function getTerminalExists(terminalId, callback) {
     var query = getGetTerminalExistsScript(terminalId);
-    $.postJSON('/api/graphql', { query: query }, function (response) {
+    $.postJSON(query, function (response) {
         if (response.errors) {
             //handle
         } else {
@@ -114,7 +111,7 @@ export function getTerminalExists(terminalId, callback) {
 
 export function getTerminalTicket(terminalId, callback) {
     var query = getGetTerminalTicketScript(terminalId);
-    $.postJSON('/api/graphql', { query: query }, function (response) {
+    $.postJSON(query, function (response) {
         if (response.errors) {
             //handle
         } else {
@@ -125,7 +122,7 @@ export function getTerminalTicket(terminalId, callback) {
 
 export function addOrderToTicket(ticket, productId, quantity = 1, callback) {
     var query = getAddOrderToTicketQuery(ticket, productId, quantity);
-    $.postJSON('/api/graphql/', { query: query }, function (response) {
+    $.postJSON(query, function (response) {
         if (response.errors) {
             // handle errors
         } else {
@@ -136,7 +133,7 @@ export function addOrderToTicket(ticket, productId, quantity = 1, callback) {
 
 export function addOrderToTerminalTicket(terminalId, productId, quantity = 1, orderTags = '', callback) {
     var query = getAddOrderToTerminalTicketScript(terminalId, productId, orderTags);
-    $.postJSON('/api/graphql/', { query: query }, function (response) {
+    $.postJSON(query, function (response) {
         if (response.errors) {
             // handle errors
         } else {
@@ -147,7 +144,7 @@ export function addOrderToTerminalTicket(terminalId, productId, quantity = 1, or
 
 export function updateOrderPortionOfTerminalTicket(terminalId, orderUid, portion, callback) {
     var query = getUpdateOrderPortionOfTerminalTicketScript(terminalId, orderUid, portion);
-    $.postJSON('/api/graphql/', { query: query }, function (response) {
+    $.postJSON(query, function (response) {
         if (response.errors) {
             // handle errors
         } else {
@@ -158,7 +155,7 @@ export function updateOrderPortionOfTerminalTicket(terminalId, orderUid, portion
 
 export function updateOrderTagOfTerminalTicket(terminalId, orderUid, name, tag, callback) {
     var query = getUpdateOrderTagOfTerminalTicketScript(terminalId, orderUid, name, tag);
-    $.postJSON('/api/graphql/', { query: query }, function (response) {
+    $.postJSON(query, function (response) {
         if (response.errors) {
             // handle errors
         } else {
@@ -169,7 +166,7 @@ export function updateOrderTagOfTerminalTicket(terminalId, orderUid, name, tag, 
 
 export function getOrderTagsForTerminal(terminalId, orderUid, callback) {
     var query = getGetOrderTagsForTerminalScript(terminalId, orderUid);
-    $.postJSON('/api/graphql/', { query: query }, function (response) {
+    $.postJSON(query, function (response) {
         if (response.errors) {
             // handle errors
         } else {
@@ -180,7 +177,7 @@ export function getOrderTagsForTerminal(terminalId, orderUid, callback) {
 
 export function getOrderTagColors(callback) {
     var query = getGetOrderTagColorsScript();
-    $.postJSON('/api/graphql/', { query: query }, function (response) {
+    $.postJSON(query, function (response) {
         if (response.errors) {
             // handle errors
         } else {
@@ -191,7 +188,7 @@ export function getOrderTagColors(callback) {
 
 export function cancelOrderOnTerminalTicket(terminalId, orderUid, callback) {
     var query = getCancelOrderOnTerminalTicketScript(terminalId, orderUid);
-    $.postJSON('/api/graphql/', { query: query }, function (response) {
+    $.postJSON(query, function (response) {
         if (response.errors) {
             // handle errors
         } else {
@@ -200,8 +197,19 @@ export function cancelOrderOnTerminalTicket(terminalId, orderUid, callback) {
     });
 }
 
+export function broadcastMessage(msg, callback) {
+    var query = getPostBroadcastMessageScript(msg);
+    $.postJSON(query, function (response) {
+        if (response.errors) {
+            // handle errors
+        } else {
+            if (callback) callback(response.data.postBroadcastMessage);
+        }
+    });
+}
+
 function getMenuScript() {
-    return `{menu:getMenu(name:"${menuName}"){categories{id,name,color,foreground,menuItems{id,name,color,foreground,productId,defaultOrderTags}}}}`;
+    return `{menu:getMenu(name:"${config.menuName}"){categories{id,name,color,foreground,menuItems{id,name,color,foreground,productId,defaultOrderTags}}}}`;
 }
 
 function getProductPortionsScript(productId) {
@@ -222,10 +230,10 @@ function getGetOrderTagsForTerminalScript(terminalId, orderUid){
 
 function getRegisterTerminalScript() {
     return `mutation m{terminalId:registerTerminal(
-        terminal:"${terminaName}",
-        department:"${departmentName}",
-        user:"${userName}",
-        ticketType:"${ticketTypeName}")}`;
+        terminal:"${config.terminalName}",
+        department:"${config.departmentName}",
+        user:"${config.userName}",
+        ticketType:"${config.ticketTypeName}")}`;
 }
 
 function getCreateTerminalTicketScript(terminalId) {
@@ -339,4 +347,9 @@ mutation m{ticket:addOrderToTicket(
       stateName,state,stateValue
     }}
 }}`;
+}
+
+function getPostBroadcastMessageScript(msg) {
+    msg = msg.replace(/"/g,'\\"');
+    return 'mutation m {postBroadcastMessage(message:"'+msg+'"){message}}';
 }

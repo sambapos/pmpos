@@ -1,12 +1,13 @@
 import $ from 'jquery';
 window.jQuery = $;
 require('ms-signalr-client');
+import {appconfig} from './config';
 
-const serverUrl = 'http://localhost:9000';
+var config = appconfig();
 
 export default class {
     static connect(callback) {
-        var connection = $.hubConnection(serverUrl);
+        var connection = $.hubConnection(config.SIGNALRserv);
         var proxy = connection.createHubProxy('default');
 
         // receives broadcast messages from a hub function, called "broadcastMessage"
