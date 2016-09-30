@@ -13,7 +13,8 @@ import {getMenu, postRefresh,
     getTerminalTicket, clearTerminalTicketOrders, closeTerminalTicket,
     getTerminalExists, updateOrderPortionOfTerminalTicket,
     cancelOrderOnTerminalTicket, getOrderTagColors, getOrderTagsForTerminal,
-    updateOrderTagOfTerminalTicket} from '../queries';
+    updateOrderTagOfTerminalTicket, broadcastMessage} from '../queries';
+
 
 export default class App extends React.Component {
     constructor(props) {
@@ -183,6 +184,10 @@ export default class App extends React.Component {
         }
         closeTerminalTicket(this.state.terminalId, (errorMessage) => {
             postRefresh();
+            
+            // notify other Clients that a Food Order Task has been Printed (for GQL Kitchen Display)
+            broadcastMessage('{"eventName":"TASK_PRINTED","terminal":"Server","userName":"Administrator","productType":"Food"}');
+
             this.setState({ errorMessage: errorMessage, isMessageOpen: true, message: 'Ticket sucsessfully created!' });
             createTerminalTicket(this.state.terminalId, (ticket) => {
                 this.setState({ ticket: ticket });
