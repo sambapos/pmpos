@@ -8,7 +8,6 @@ import TicketTags from './TicketTags';
 import Commands from './Commands';
 import Signalr from '../signalr';
 import Snackbar from 'material-ui/Snackbar';
-import Paper from 'material-ui/Paper';
 import {getMenu, postRefresh,
     registerTerminal, createTerminalTicket, addOrderToTerminalTicket,
     getTerminalTicket, clearTerminalTicketOrders, closeTerminalTicket,
