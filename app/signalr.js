@@ -1,8 +1,12 @@
+import {appconfig} from './config';
+import configuration from 'configuration';
 import $ from 'jquery';
 window.jQuery = $;
 require('ms-signalr-client');
 
-const serverUrl = 'http://localhost:9000';
+var config = appconfig();
+
+const serverUrl = config.SIGNALRserv;
 
 export default class {
     static connect(callback) {
