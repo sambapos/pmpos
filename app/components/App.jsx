@@ -16,9 +16,10 @@ import {getMenu, postRefresh,
     updateOrderTagOfTerminalTicket, broadcastMessage} from '../queries';
 
 
+
 export default class App extends React.Component {
-    constructor(props) {
-        super(props);
+    constructor(props, context) {
+        super(props, context);
         this.state = {
             menu: { categories: [{ id: 1, name: 'Loading' }] },
             selectedCategory: '',
@@ -135,6 +136,7 @@ export default class App extends React.Component {
                 <TicketTags ticket={ticket}/>
                 <Commands commands = {[
                     { command: this.cleanTicket, caption: 'Clear Orders', color: 'White' },
+                    { command: this.selectTable, caption: 'Tables', color: 'White' },
                     { command: this.closeTicket, caption: 'Close', color: 'Red', foreground: 'White' }
                 ]}/>
                 <TicketTotal ticket={ticket}/>
@@ -177,6 +179,10 @@ export default class App extends React.Component {
         });
     }
 
+    selectTable = () => {
+        this.context.router.push('/entities');
+    }
+
     closeTicket = () => {
         if (this.state.ticket.orders.length == 0) {
             this.setState({ isMessageOpen: true, message: 'Add orders to create a ticket.' });
@@ -184,7 +190,7 @@ export default class App extends React.Component {
         }
         closeTerminalTicket(this.state.terminalId, (errorMessage) => {
             postRefresh();
-            
+
             // notify other Clients that a Food Order Task has been Printed (for GQL Kitchen Display)
             broadcastMessage('{"eventName":"TASK_PRINTED","terminal":"Server","userName":"Administrator","productType":"Food"}');
 
@@ -214,3 +220,7 @@ export default class App extends React.Component {
         });
     };
 }
+
+App.contextTypes = {
+    router: React.PropTypes.object
+};
