@@ -13,7 +13,7 @@ Reactjs based WebPOS Project for SambaPOS
 - Edit app > queries.js and set `serverUrl`, `menuName`, `departmentName`, `userName`, `tickettypeName`, and `terminalName` constants to setup GraphQL server.
 - Edit app > signalr.js and set `serverUrl` constant to setup SignalR Server.
 
-#Contributorsbran
+#Contributors
 Emre Eren (https://github.com/emreeren)  
 Jesse Parker (https://github.com/kendash)  
 Q McKay (https://github.com/QTMcKay)  
