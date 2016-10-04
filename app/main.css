@@ -30,8 +30,8 @@ body {
   display: flex;
   height: 100%;
   flex-direction: column;
+  overflow: hidden;
 }
-
 
 .menu {
   height: 45%;
