@@ -6,7 +6,7 @@ import {postRefresh} from '../queries';
 
 export default class Orders extends React.Component {
     render() {
-        const {ticket, orderTagColors, onClick = () => { }, onChangePortion = () => { }, onCancelOrder = () => { }, onOrderTagSelected = () => { } } = this.props;
+        const {ticket, onClick = () => { }, onChangePortion = () => { }, onCancelOrder = () => { }, onOrderTagSelected = () => { } } = this.props;
         return (
             <Paper className="orders" id="orders">
                 {ticket.orders.map(({uid, name, quantity, price, priceTag, portion, productId, tags}) =>
@@ -18,7 +18,6 @@ export default class Orders extends React.Component {
                         portion={portion}
                         productId={productId}
                         orderTags={tags}
-                        orderTagColors={orderTagColors}
                         onClick={onClick}
                         orderUid={uid}
                         getOrderTags = {this.props.getOrderTags}

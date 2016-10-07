@@ -76,7 +76,6 @@ class App extends Component {
                         menuItems={menuItems}
                         onMenuItemClick={this.onMenuItemClick}/>
                     <Orders ticket={ticket}
-                        orderTagColors={orderTagColors}
                         onChangePortion={this.changePortion}
                         getOrderTags={this.getOrderTags}
                         onCancelOrder={this.cancelOrder}
@@ -202,7 +201,6 @@ const mapStateToProps = state => ({
     message: state.app.getIn(['message', 'text']),
     isMessageOpen: state.app.getIn(['message', 'isOpen']),
     ticket: state.app.get('ticket'),
-    orderTagColors: state.app.get('orderTagColors'),
     menu: state.app.get('menu'),
     menuItems: state.app.get('menuItems')
 })
