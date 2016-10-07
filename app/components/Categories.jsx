@@ -1,21 +1,44 @@
 import React from 'react';
+import ReactDom from 'react-dom';
+import {connect} from 'react-redux';
 import RaisedButton from 'material-ui/RaisedButton';
 
-export default class Categories extends React.Component {
+class CategoryButton extends React.Component {
     render() {
-        const {categories, selectedCategory, onClick = () => { } } = this.props;
+        const { foreground, selectedCategory, name, color, onClick } = this.props;
+        return <RaisedButton
+            className = 'categoryButton'
+            label = {selectedCategory === name ? <b>-{name}-</b> : name}
+            labelColor = {foreground}
+            backgroundColor={color}
+            onClick={onClick.bind(null, name) }/>
+    }
+}
+
+class Categories extends React.Component {
+    render() {
+        const { categories = [], selectedCategory, onClick = () => { } } = this.props;
         return (
             <div className="categories" id="categories">
                 {categories.map(({id, name, color, foreground}) =>
-                    <RaisedButton
-                        className = 'categoryButton'
-                        label = {selectedCategory === name ? <b>-{name}-</b> : name}
-                        labelColor = {foreground}
+                    <CategoryButton
+                        selectedCategory={selectedCategory}
+                        name = {name}
+                        foreground = {foreground}
                         key={id}
-                        backgroundColor={color}
-                        onClick={onClick.bind(null, name) }/>
+                        color={color}
+                        onClick={onClick}/>
                 ) }
             </div>
         );
     }
-} 
+
+}
+
+const mapStateToProps = state => ({
+    selectedCategory: state.app.get('selectedCategory')
+})
+
+export default connect(
+    mapStateToProps
+)(Categories)

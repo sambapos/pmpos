@@ -14,11 +14,6 @@ import reducer from './reducers';
 
 const store = createStore(reducer,window.devToolsExtension && window.devToolsExtension());
 
-store.dispatch({
-  type: 'CHANGE_SELECTED_CATEGORY',
-  category: ''
-});
-
 if (process.env.NODE_ENV !== 'production') {
   React.Perf = require('react-addons-perf');
 }

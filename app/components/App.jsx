@@ -32,7 +32,6 @@ class App extends Component {
         Signalr.connect(() => {
             console.log('Connected!!!');
         });
-        this.refreshMenu();
     }
 
     updateTerminalId(terminalId) {
@@ -43,38 +42,13 @@ class App extends Component {
         });
     }
 
-    refreshMenu() {
-        Queries.getMenu((menu) => {
-            Queries.getOrderTagColors((colors) => {
-                var result = colors.reduce(function (map, obj) {
-                    map[obj.name] = obj.value;
-                    return map;
-                }, {});
-                this.props.setOrderTagColors(result);
-            });
-            this.props.setMenu(menu);
-            if (menu.categories[0])
-                this.onCategoryClick(menu.categories[0].name);
-        })
-    }
-
-    refreshMenuItems(category) {
-        var categories = this.props.menu.categories;
-        var c = categories.find(x => x.name === category);
-        this.props.setMenuItems(c.menuItems);
-    }
-
     render() {
         const {menu, menuItems, ticket, orderTagColors} = this.props;
         return (
             <div className = "mainDiv">
                 <Header header = "New Ticket"/>
                 <div className = "mainBody">
-                    <Menu categories={menu.categories}
-                        selectedCategory={this.props.selectedCategory}
-                        onCategoryClick={this.onCategoryClick}
-                        menuItems={menuItems}
-                        onMenuItemClick={this.onMenuItemClick}/>
+                    <Menu onMenuItemClick={this.onMenuItemClick}/>
                     <Orders ticket={ticket}
                         onChangePortion={this.changePortion}
                         getOrderTags={this.getOrderTags}
@@ -87,7 +61,7 @@ class App extends Component {
                     { command: this.selectTable, caption: 'Tables', color: 'White' },
                     { command: this.closeTicket, caption: 'Close', color: 'Red', foreground: 'White' }
                 ]}/>
-                <TicketTotal ticket={ticket}/>
+                <TicketTotal />
                 <Snackbar
                     open={this.props.isMessageOpen}
                     message={this.props.message}
@@ -108,12 +82,6 @@ class App extends Component {
             this.props.setTicket(ticket);
             callback(ticket);
         });
-    }
-
-    onCategoryClick = (category) => {
-        this.props.changeSelectedCategory(category);
-        this.closeMessage();
-        this.refreshMenuItems(category);
     }
 
     onMenuItemClick = (productId, orderTags = '') => {
@@ -185,35 +153,24 @@ App.defaultProps = {
 }
 
 App.PropTypes = {
-    selectedCategory: PropTypes.string,
     terminalId: PropTypes.number,
     message: PropTypes.object,
     isMessageOpen: PropTypes.boolean,
-    ticket: PropTypes.object,
-    orderTagColors: PropTypes.object,
-    menu: PropTypes.object,
-    menuItems: PropTypes.object
+    ticket: PropTypes.object
 }
 
 const mapStateToProps = state => ({
-    selectedCategory: state.app.get('selectedCategory'),
     terminalId: state.app.get('terminalId'),
     message: state.app.getIn(['message', 'text']),
     isMessageOpen: state.app.getIn(['message', 'isOpen']),
-    ticket: state.app.get('ticket'),
-    menu: state.app.get('menu'),
-    menuItems: state.app.get('menuItems')
+    ticket: state.app.get('ticket')
 })
 
 const mapDispatchToProps = ({
-    changeSelectedCategory: Actions.changeSelectedCategory,
     changeTerminalId: Actions.chageTerminalId,
     updateMessage: Actions.updateMessage,
     closeMessage: Actions.closeMessage,
-    setTicket: Actions.setTicket,
-    setOrderTagColors: Actions.setOrderTagColors,
-    setMenu: Actions.setMenu,
-    setMenuItems: Actions.setMenuItems
+    setTicket: Actions.setTicket
 })
 
 export default connect(
