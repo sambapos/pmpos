@@ -2,7 +2,7 @@ import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App';
-import EntityList from './components/Entities/EntityList';
+import EntityList from './components/Entities';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
@@ -25,7 +25,7 @@ const AppHandler = () => (
     <Provider store={store}>
       <Router history={hashHistory }>
         <Route path="/" component={App}></Route>
-        <Route path="/entities" component={EntityList}></Route>
+        <Route path="/entities(/:terminalId)(/:screenName)" component={EntityList}></Route>
       </Router>
     </Provider>
   </MuiThemeProvider>

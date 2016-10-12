@@ -20,14 +20,16 @@ class SelectedOrderTags extends React.Component {
     }
 
     getColor = (tag) => {
-        var result = this.props.orderTagColors[tag];
-        if (result) return result;
+        if (this.props.orderTagColors) {
+            var result = this.props.orderTagColors[tag];
+            if (result) return result;
+        }
         return 'LightGray';
     }
-} 
+}
 
 const mapStateToProps = state => ({
-    orderTagColors: state.app.get('orderTagColors')
+    orderTagColors: state.menu.get('orderTagColors')
 })
 
 export default connect(

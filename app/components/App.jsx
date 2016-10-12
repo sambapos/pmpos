@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import uuid from 'uuid';
@@ -42,31 +42,37 @@ class App extends Component {
         });
     }
 
+    getHeader(ticket = { entities: [] }) {
+        var title = 'New Ticket';
+        var entityList = ticket != null && ticket.entities.length > 0 ? ticket.entities.map(x => x.name).join() : undefined;
+        return title + (entityList?` (${entityList})`:'');
+    }
+
     render() {
-        const {menu, menuItems, ticket, orderTagColors} = this.props;
+        const {menu, menuItems, ticket} = this.props;
         return (
-            <div className = "mainDiv">
-                <Header header = "New Ticket"/>
-                <div className = "mainBody">
-                    <Menu onMenuItemClick={this.onMenuItemClick}/>
+            <div className="mainDiv">
+                <Header header={this.getHeader(ticket)} />
+                <div className="mainBody">
+                    <Menu onMenuItemClick={this.onMenuItemClick} />
                     <Orders ticket={ticket}
                         onChangePortion={this.changePortion}
                         getOrderTags={this.getOrderTags}
                         onCancelOrder={this.cancelOrder}
                         onOrderTagSelected={this.onOrderTagSelected} />
                 </div>
-                <TicketTags ticket={ticket}/>
-                <Commands commands = {[
+                <TicketTags ticket={ticket} />
+                <Commands commands={[
                     { command: this.cleanTicket, caption: 'Clear Orders', color: 'White' },
                     { command: this.selectTable, caption: 'Tables', color: 'White' },
                     { command: this.closeTicket, caption: 'Close', color: 'Red', foreground: 'White' }
-                ]}/>
+                ]} />
                 <TicketTotal />
                 <Snackbar
                     open={this.props.isMessageOpen}
                     message={this.props.message}
                     autoHideDuration={4000}
-                    onRequestClose={this.closeMessage}/>
+                    onRequestClose={this.closeMessage} />
             </div>
         );
     }
@@ -98,7 +104,7 @@ class App extends Component {
     }
 
     selectTable = () => {
-        this.context.router.push('/entities');
+        this.context.router.push({ pathname: '/entities', query: { terminalId: this.props.terminalId,screenName:'All Tables' } });
     }
 
     closeTicket = () => {
@@ -140,14 +146,13 @@ class App extends Component {
 }
 
 App.contextTypes = {
-    router: PropTypes.object
-};
+    router: React.PropTypes.object
+}
 
 App.defaultProps = {
     message: '',
     isMessageOpen: false,
-    ticket: { id: 0, totalAmount: 0, orders: [] },
-    orderTagColors: [],
+    ticket: { id: 0, totalAmount: 0, orders: [], entities: [], tags: [] },
     menu: { categories: [] },
     menuItems: []
 }

@@ -3,9 +3,9 @@ import {connect} from 'react-redux';
 import Categories from './Categories';
 import MenuItems from './MenuItems';
 import Paper from 'material-ui/Paper';
-import * as Queries from '../queries';
-import * as Actions from '../actions';
-
+import * as Queries from '../../queries';
+import * as Actions from '../../actions';
+ 
 class Menu extends React.Component {
     componentDidMount() {
         if (!this.props.menu)
@@ -16,7 +16,6 @@ class Menu extends React.Component {
         const {
             menu,
             menuItems,
-            onCategoryClick = () => { },
             onMenuItemClick = () => { } } = this.props;
         return (
             <Paper className="menu">
@@ -57,8 +56,8 @@ class Menu extends React.Component {
 }
 
 const mapStateToProps = state => ({
-    menu: state.app.get('menu'),
-    menuItems: state.app.get('menuItems')
+    menu: state.menu.get('menu'),
+    menuItems: state.menu.get('menuItems')
 })
 
 const mapDispatchToProps = ({

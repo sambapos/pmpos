@@ -36,7 +36,7 @@ class Categories extends React.Component {
 }
 
 const mapStateToProps = state => ({
-    selectedCategory: state.app.get('selectedCategory')
+    selectedCategory: state.menu.get('selectedCategory')
 })
 
 export default connect(

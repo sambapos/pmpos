@@ -232,8 +232,26 @@ body {
   transform: translate(-50%, -50%);
 }
 
-.dialogContent{
-  
+.ticketTag{
+  margin: 4px;
+}
+
+.entityList{
+  display: flex;
+  flex-wrap: wrap;
+  overflow-y: auto;
+  height: 100vh;
+}
+
+.entityButton{
+  margin: 4px;
+  flex: 1 1 15%;
+  display: flex;
+  align-content: stretch;
+}
+
+.entityButton div{
+  flex:1;
 }
 
 .mrkdwn p {

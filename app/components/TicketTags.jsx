@@ -8,7 +8,7 @@ export default class TicketTags extends React.Component {
             return (
                 <div className="ticketTags">
                     {ticket.tags.map(({tagName, tag}) =>
-                        <span key={tag}>{tagName}: {tag}</span>
+                        <span className="ticketTag" key={tag}>{tagName}: {tag}</span>
                     ) }
                 </div>
             );

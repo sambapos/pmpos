@@ -23,3 +23,7 @@ export const setTicket = ticket => ({
 export const setOrderTagColors = colors => ({ type: types.SET_ORDER_TAG_COLORS, colors });
 export const setMenu = menu => ({ type: types.SET_MENU, menu });
 export const setMenuItems = menuItems => ({ type: types.SET_MENU_ITEMS, menuItems });
+
+export const loadEntityScreenRequest = screen => ({ type: types.LOAD_ENTITY_SCREEN_REQUEST, screen });
+export const loadEntityScreenSuccess = (screen, items) => ({ type: types.LOAD_ENTITY_SCREEN_SUCCESS, screen, items });
+export const loadEntityScreenFailure = (screen, error) => ({ type: types.LOAD_ENTITY_SCREEN_FAILURE, screen, error });
