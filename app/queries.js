@@ -277,13 +277,13 @@ function getClearTerminalTicketScript(terminalId) {
 }
 
 function getUpdateOrderPortionOfTerminalTicketScript(terminalId, orderUid, portion) {
-    return `mutation m {ticket:updateOrderPortionOfTerminalTicket(
+    return `mutation m {ticket:updateOrderOfTerminalTicket(
         terminalId:"${terminalId}",orderUid:"${orderUid}",portion:"${portion}")
     ${getTicketResult()}}`;
 }
 
 function getUpdateOrderTagOfTerminalTicketScript(terminalId, orderUid, name, tag) {
-    return `mutation m{ticket:updateOrderTagOfTerminalTicket(
+    return `mutation m{ticket:updateOrderOfTerminalTicket(
         terminalId:"${terminalId}",
         orderUid:"${orderUid}",
 	    orderTags:[{tagName:"${name}",tag:"${tag}"}])

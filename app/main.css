@@ -119,6 +119,22 @@ body {
   margin: 5px;
 }
 
+.flexButton {
+  flex: 1 1 40%;
+  margin: 4px;
+  font-size: 1em;
+  display: flex;
+}
+
+.flexButton p{
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+}
+
 .menuButton {
   flex: 1 1 40%;
   margin: 4px;
@@ -241,17 +257,6 @@ body {
   flex-wrap: wrap;
   overflow-y: auto;
   height: 100vh;
-}
-
-.entityButton{
-  margin: 4px;
-  flex: 1 1 15%;
-  display: flex;
-  align-content: stretch;
-}
-
-.entityButton div{
-  flex:1;
 }
 
 .mrkdwn p {

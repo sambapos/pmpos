@@ -6,13 +6,29 @@ import { changeEntityOfTerminalTicket, getEntityScreenItems } from '../../querie
 import * as Actions from '../../actions';
 
 class EntityListButton extends React.Component {
+
     render() {
+        const style = {
+            'display': 'flex',
+            'flex':'1',
+            'height':'75px'
+        };
+        const style2 = {
+            'color': this.props.labelColor,
+            'flex':'1',
+            'position':'absolute',
+            'top':'0',
+            'left':'0',
+            'height':'100%',
+            'width':'100%'
+        };
+        
         return (<RaisedButton
-            style={{ 'height': 'auto', 'display': 'flex' }}
-            className='entityButton'
+            style={style}
+            className='entityButton flexButton'
             backgroundColor={this.props.backgroundColor}
             onClick={this.props.onClick}>
-            <div style={{ 'font-color': this.props.labelColor,'height':'100%' }}>
+            <div style={style2}>
                 <ReactMarkdown source={this.props.caption} />
             </div>
         </RaisedButton>)
