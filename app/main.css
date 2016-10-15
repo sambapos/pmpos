@@ -14,9 +14,10 @@ body {
 }
 
 .mainBody{
-  height: 85%;
+  flex: 1;
   display: flex;
   flex-direction: column;
+  overflow-y:auto;
 }
 
 @media (min-width: 480px) {
@@ -30,8 +31,8 @@ body {
   display: flex;
   height: 100%;
   flex-direction: column;
+  overflow: hidden;
 }
-
 
 .menu {
   height: 45%;
@@ -56,6 +57,12 @@ body {
 	}
 
 .orders{
+  flex:1;
+  overflow-x: auto;
+  margin: 4px 0px;
+}
+
+.myTickets{
   flex:1;
   overflow-x: auto;
   margin: 4px 0px;
@@ -101,7 +108,8 @@ body {
 .menuItems{
   display: flex;
   flex-wrap : wrap;
-  overflow-Y: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   margin: 1px;
   flex:1;
   align-content: flex-start;
@@ -117,6 +125,22 @@ body {
 
 .totals{
   margin: 5px;
+}
+
+.flexButton {
+  flex: 1 1 40%;
+  margin: 4px;
+  font-size: 1em;
+  display: flex;
+}
+
+.flexButton p{
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
 }
 
 .menuButton {
@@ -232,8 +256,15 @@ body {
   transform: translate(-50%, -50%);
 }
 
-.dialogContent{
-  
+.ticketTag{
+  margin: 4px;
+}
+
+.entityList{
+  display: flex;
+  flex-wrap: wrap;
+  overflow-y: auto;
+  height: 100vh;
 }
 
 .mrkdwn p {

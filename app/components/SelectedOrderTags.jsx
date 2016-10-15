@@ -1,7 +1,8 @@
 import React from 'react';
 import Order from './Order';
+import { connect } from 'react-redux'
 
-export default class SelectedOrderTags extends React.Component {
+class SelectedOrderTags extends React.Component {
     render() {
         const {orderTags} = this.props;
         if (!orderTags || orderTags.length === 0) return null;
@@ -19,9 +20,18 @@ export default class SelectedOrderTags extends React.Component {
     }
 
     getColor = (tag) => {
-        var result = this.props.orderTagColors[tag];
-        if (result) return result;
+        if (this.props.orderTagColors) {
+            var result = this.props.orderTagColors[tag];
+            if (result) return result;
+        }
         return 'LightGray';
     }
+}
 
-} 
+const mapStateToProps = state => ({
+    orderTagColors: state.menu.get('orderTagColors')
+})
+
+export default connect(
+    mapStateToProps
+)(SelectedOrderTags)

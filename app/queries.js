@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import jQuery from 'jquery';
-import {appconfig} from './config';
+import { appconfig } from './config';
 
 var config = appconfig();
 
@@ -11,10 +11,44 @@ $.postJSON = function (query, callback) {
         'url': config.GQLurl,
         'contentType': 'application/json',
         'data': data,
-        'dataType': 'json',
-        'success': callback
-    });
+        'dataType': 'json'
+    })
+        .done(response => { if (callback) callback(response) })
+        .fail(response => { if (callback) callback(response.responseJSON) });
 };
+
+export function getTerminalTicket(terminalId, callback) {
+    var query = getGetTerminalTicketScript(terminalId);
+    $.postJSON(query, function (response) {
+        if (response.errors) {
+            if (callback) callback(undefined);
+        } else {
+            if (callback) callback(response.data.ticket);
+        }
+    });
+}
+
+export function loadTerminalTicket(terminalId, ticketId, callback) {
+    var query = getLoadTerminalTicketScript(terminalId, ticketId);
+    $.postJSON(query, function (response) {
+        if (response.errors) {
+            if (callback) callback(undefined);
+        } else {
+            if (callback) callback(response.data.ticket);
+        }
+    });
+}
+
+export function getTerminalTickets(terminalId, callback) {
+    var query = getGetTerminalTicketsScript(terminalId);
+    $.postJSON(query, function (response) {
+        if (response.errors) {
+            if (callback) callback(undefined);
+        } else {
+            if (callback) callback(response.data.tickets);
+        }
+    });
+}
 
 export function postRefresh() {
     var query = 'mutation m{postTicketRefreshMessage(id:0){id}}';
@@ -109,17 +143,6 @@ export function getTerminalExists(terminalId, callback) {
     });
 }
 
-export function getTerminalTicket(terminalId, callback) {
-    var query = getGetTerminalTicketScript(terminalId);
-    $.postJSON(query, function (response) {
-        if (response.errors) {
-            //handle
-        } else {
-            if (callback) callback(response.data.ticket);
-        }
-    });
-}
-
 export function addOrderToTicket(ticket, productId, quantity = 1, callback) {
     var query = getAddOrderToTicketQuery(ticket, productId, quantity);
     $.postJSON(query, function (response) {
@@ -138,6 +161,28 @@ export function addOrderToTerminalTicket(terminalId, productId, quantity = 1, or
             // handle errors
         } else {
             if (callback) callback(response.data.ticket);
+        }
+    });
+}
+
+export function changeEntityOfTerminalTicket(terminalId, type, name, callback) {
+    var query = getChangeEntityOfTerminalTicketScript(terminalId, type, name);
+    $.postJSON(query, function (response) {
+        if (response.errors) {
+            // handle errors
+        } else {
+            if (callback) callback(response.data.ticket);
+        }
+    });
+}
+
+export function getEntityScreenItems(name, callback) {
+    var query = getGetEntiyScreenItemsScript(name);
+    $.postJSON(query, function (response) {
+        if (response.errors) {
+            // handle errors
+        } else {
+            if (callback) callback(response.data.items);
         }
     });
 }
@@ -220,7 +265,7 @@ function getProductOrderTagsScript(productId, portion) {
     return `{orderTags:getOrderTagGroups(productId:${productId},portion:"${portion}",hidden:false){name,tags{name}}}`;
 }
 
-function getGetOrderTagsForTerminalScript(terminalId, orderUid){
+function getGetOrderTagsForTerminalScript(terminalId, orderUid) {
     return `
     mutation tags{orderTags:getOrderTagsForTerminalTicketOrder(
         terminalId:"${terminalId}"
@@ -243,9 +288,22 @@ function getCreateTerminalTicketScript(terminalId) {
 }
 
 function getGetTerminalTicketScript(terminalId) {
-    return `mutation m{
+    return `query q{
             ticket:getTerminalTicket(terminalId:"${terminalId}")
         ${getTicketResult()}}`;
+}
+
+function getLoadTerminalTicketScript(terminalId, ticketId) {
+    return `mutation m{
+            ticket:loadTerminalTicket(terminalId:"${terminalId}", ticketId:"${ticketId}")
+        ${getTicketResult()}}`;
+}
+
+
+function getGetTerminalTicketsScript(terminalId) {
+    return `query q{
+            tickets:getTerminalTickets(terminalId:"${terminalId}")
+        {id,date,lastOrderDate,remaining,number,entities{type,name}}}`;
 }
 
 function getClearTerminalTicketScript(terminalId) {
@@ -255,13 +313,13 @@ function getClearTerminalTicketScript(terminalId) {
 }
 
 function getUpdateOrderPortionOfTerminalTicketScript(terminalId, orderUid, portion) {
-    return `mutation m {ticket:updateOrderPortionOfTerminalTicket(
+    return `mutation m {ticket:updateOrderOfTerminalTicket(
         terminalId:"${terminalId}",orderUid:"${orderUid}",portion:"${portion}")
     ${getTicketResult()}}`;
 }
 
 function getUpdateOrderTagOfTerminalTicketScript(terminalId, orderUid, name, tag) {
-    return `mutation m{ticket:updateOrderTagOfTerminalTicket(
+    return `mutation m{ticket:updateOrderOfTerminalTicket(
         terminalId:"${terminalId}",
         orderUid:"${orderUid}",
 	    orderTags:[{tagName:"${name}",tag:"${tag}"}])
@@ -279,7 +337,7 @@ function getCloseTerminalTicketScript(terminalId) {
 }
 
 function getGetTerminalExistsScript(terminalId) {
-    return `mutation m{
+    return `query q{
             result:getTerminalExists(terminalId:"${terminalId}")}`;
 }
 
@@ -291,12 +349,25 @@ function getAddOrderToTerminalTicketScript(terminalId, productId, orderTags) {
         ${getTicketResult()}}`;
 }
 
+function getChangeEntityOfTerminalTicketScript(terminalId, type, name) {
+    return `mutation m{
+            ticket:changeEntityOfTerminalTicket(terminalId:"${terminalId}",
+            type:"${type}"
+            name:"${name}")
+        ${getTicketResult()}}`;
+}
+
+function getGetEntiyScreenItemsScript(name) {
+    return `query q{items:getEntiyScreenItems(name:"${name}"){name,caption,color,labelColor}}`;
+}
+
 function getGetOrderTagColorsScript() {
     return '{colors:getOrderTagColors{name,value}}';
 }
 
 function getTicketResult() {
     return `{id,uid,type,number,date,totalAmount,remainingAmount,
+  entities{name,type},      
   states{stateName,state},
   tags{tagName,tag},
 	orders{
@@ -350,6 +421,6 @@ mutation m{ticket:addOrderToTicket(
 }
 
 function getPostBroadcastMessageScript(msg) {
-    msg = msg.replace(/"/g,'\\"');
-    return 'mutation m {postBroadcastMessage(message:"'+msg+'"){message}}';
+    msg = msg.replace(/"/g, '\\"');
+    return 'mutation m {postBroadcastMessage(message:"' + msg + '"){message}}';
 }

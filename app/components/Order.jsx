@@ -25,7 +25,7 @@ export default class Order extends React.Component {
         this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
     }
     render() {
-        const {id, name, quantity, price, priceTag, portion, productId, orderUid, orderTags, orderTagColors, onClick = () => { }, onCancelOrder = () => { } } = this.props;
+        const {id, name, quantity, price, priceTag, portion, productId, orderUid, orderTags, onClick = () => { }, onCancelOrder = () => { } } = this.props;
         const detailActions = [
             <FlatButton
                 label="Remove Order"
@@ -49,8 +49,7 @@ export default class Order extends React.Component {
                         <span >{price}</span>
                     </span>
                 </div>
-                <SelectedOrderTags orderTags={orderTags}
-                    orderTagColors={orderTagColors}/>
+                <SelectedOrderTags orderTags={orderTags}/>
             </div>;
 
         return (

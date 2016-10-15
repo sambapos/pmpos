@@ -40,6 +40,7 @@ export function appconfig() {
     var departmentName = 'Restaurant';
     var ticketTypeName = 'Ticket';
     var menuName = 'Menu';
+    var entityScreenName = 'Tables';
 
     // assign some stuff to the Object
     // you can override the "auto config" here if you wish
@@ -54,6 +55,7 @@ export function appconfig() {
     config.departmentName = departmentName;
     config.ticketTypeName = ticketTypeName;
     config.menuName = menuName;
+    config.entityScreenName = entityScreenName;
 
     return config; // return the Object to the caller
 }

@@ -1,4 +1,7 @@
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { appconfig } from '../config';
 import uuid from 'uuid';
 import Header from './Header';
 import Menu from './Menu';
@@ -6,211 +9,203 @@ import Orders from './Orders';
 import TicketTotal from './TicketTotal';
 import TicketTags from './TicketTags';
 import Commands from './Commands';
+import MyTickets from './MyTickets';
 import Signalr from '../signalr';
 import Snackbar from 'material-ui/Snackbar';
-import {getMenu, postRefresh,
-    registerTerminal, createTerminalTicket, addOrderToTerminalTicket,
-    getTerminalTicket, clearTerminalTicketOrders, closeTerminalTicket,
-    getTerminalExists, updateOrderPortionOfTerminalTicket,
-    cancelOrderOnTerminalTicket, getOrderTagColors, getOrderTagsForTerminal,
-    updateOrderTagOfTerminalTicket, broadcastMessage} from '../queries';
+import * as Queries from '../queries';
+import * as Actions from '../actions';
 
-
-export default class App extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            menu: { categories: [{ id: 1, name: 'Loading' }] },
-            selectedCategory: '',
-            menuItems: [
-                { productId: 1, name: 'Loading...' }
-            ],
-            terminalId: '',
-            errorMessage: '',
-            isMessageOpen: false,
-            message: '',
-            orderTagColors: [],
-            ticket: {
-                id: 10,
-                uid: 'CyB2Fj__vkO1wePOCG9kjQ',
-                type: 'Ticket',
-                date: '2016-08-23T18:51:35',
-                department: 'Restaurant',
-                user: 'Administrator',
-                terminal: 'Server',
-                number: 'A0001',
-                totalAmount: 9,
-                remainingAmount: 9,
-                note: '',
-                entities: [],
-                states: [],
-                tags: [],
-                calculations: [],
-                orders: [
-                    {
-                        name: 'Tea',
-                        id: 11,
-                        uid: 'errq0C54fkSvfdVrX2X8Og',
-                        quantity: 3,
-                        price: 1,
-                        calculatePrice: false,
-                        decreaseInventory: true,
-                        increaseInventory: false,
-                        states: [
-                            { stateName: 'Status', state: 'Submitted', stateValue: '' },
-                            { stateName: 'GStatus', state: 'Gift', stateValue: '' }
-                        ],
-                        tags: []
-                    }
-                ]
-            }
-        }
-    }
+class App extends Component {
 
     componentDidMount() {
+        if (localStorage['terminalId']) {
+            var terminalId = localStorage['terminalId'];
+            Queries.getTerminalExists(terminalId, (result) => {
+                if (result) {
+                    Queries.getTerminalTicket(terminalId, (ticket) => {
+                        this.props.changeTerminalId(terminalId);
+                        this.props.setTicket(ticket);
+                    })
+                } else Queries.registerTerminal((terminalId) => this.updateTerminalId(terminalId));
+            });
+        }
+        else Queries.registerTerminal((terminalId) => this.updateTerminalId(terminalId));
+
+        if (this.props.terminalId) return;
         Signalr.connect(() => {
             console.log('Connected!!!');
         });
-        if (localStorage['terminalId']) {
-            var terminalId = localStorage['terminalId'];
-            getTerminalExists(terminalId, (result) => {
-                if (result) {
-                    getTerminalTicket(terminalId, (ticket) => {
-                        this.setState({ terminalId: terminalId, ticket: ticket });
-                    })
-                } else registerTerminal((terminalId) => this.updateTerminalId(terminalId));
-            });
-        }
-        else registerTerminal((terminalId) => this.updateTerminalId(terminalId));
-        this.refreshMenu();
     }
 
     updateTerminalId(terminalId) {
         localStorage['terminalId'] = terminalId;
-        this.setState({ terminalId: terminalId });
-        createTerminalTicket(terminalId, (ticket) => {
-            this.setState({ ticket: ticket });
-        });
+        this.props.changeTerminalId(terminalId);
     }
 
-    refreshMenu() {
-        getMenu((menu) => {
-            getOrderTagColors((colors) => {
-                var result = colors.reduce(function (map, obj) {
-                    map[obj.name] = obj.value;
-                    return map;
-                }, {});
-                this.setState({ orderTagColors: result });
-            });
-            this.setState({ menu: menu });
-            if (menu.categories[0])
-                this.onCategoryClick(menu.categories[0].name);
-        })
-    }
-
-    refreshMenuItems(category) {
-        var categories = this.state.menu.categories;
-        var c = categories.find(x => x.name === category);
-        this.setState({ menuItems: c.menuItems });
+    getHeader(ticket = { entities: [] }) {
+        var title = ticket.id === undefined ? 'PM-POS' :
+            ticket.id > 0 ? 'Ticket' : 'New Ticket';
+        var entityList = ticket != null && ticket.entities.length > 0 ? ticket.entities.map(x => x.name).join() : undefined;
+        return title + (entityList ? ` (${entityList})` : '');
     }
 
     render() {
-        const {menu, selectedCategory, menuItems, ticket, orderTagColors} = this.state;
+        const {menu, menuItems, ticket} = this.props;
         return (
-            <div className = "mainDiv">
-                <Header header = "New Ticket"/>
-                <div className = "mainBody">
-                    <Menu categories={menu.categories}
-                        selectedCategory={selectedCategory}
-                        onCategoryClick={this.onCategoryClick}
-                        menuItems={menuItems}
-                        onMenuItemClick={this.onMenuItemClick}/>
+            <div className="mainDiv">
+                <Header header={this.getHeader(ticket)} />
+                <div className="mainBody">
+                    <Menu onMenuItemClick={this.onMenuItemClick} />
                     <Orders ticket={ticket}
-                        orderTagColors={orderTagColors}
                         onChangePortion={this.changePortion}
                         getOrderTags={this.getOrderTags}
                         onCancelOrder={this.cancelOrder}
                         onOrderTagSelected={this.onOrderTagSelected} />
+                    <MyTickets ticket={ticket} onClick={this.onTicketClick} />
                 </div>
-                <TicketTags ticket={ticket}/>
-                <Commands commands = {[
+                <TicketTags ticket={ticket} />
+                <Commands commands={[
                     { command: this.cleanTicket, caption: 'Clear Orders', color: 'White' },
+                    { command: this.selectTable, caption: 'Tables', color: 'White' },
                     { command: this.closeTicket, caption: 'Close', color: 'Red', foreground: 'White' }
-                ]}/>
-                <TicketTotal ticket={ticket}/>
+                ]} />
+                <TicketTotal />
                 <Snackbar
-                    open={this.state.isMessageOpen}
-                    message={this.state.message}
+                    open={this.props.isMessageOpen}
+                    message={this.props.message}
                     autoHideDuration={4000}
-                    onRequestClose={this.handleRequestCloseMessage}/>
+                    onRequestClose={this.closeMessage} />
             </div>
         );
     }
 
+    onTicketClick = (ticketId) => {
+        console.log('Ticket Open', ticketId);
+        Queries.loadTerminalTicket(this.props.terminalId, ticketId, (ticket) => {
+            this.props.setTicket(ticket);
+        });
+    }
+
     getOrderTags = (orderUid, callback) => {
-        getOrderTagsForTerminal(this.state.terminalId, orderUid, (orderTags) => {
+        Queries.getOrderTagsForTerminal(this.props.terminalId, orderUid, (orderTags) => {
             callback(orderTags);
         })
     }
 
     onOrderTagSelected = (orderUid, name, tag, callback) => {
-        updateOrderTagOfTerminalTicket(this.state.terminalId, orderUid, name, tag, (ticket) => {
-            this.setState({ ticket: ticket });
+        Queries.updateOrderTagOfTerminalTicket(this.props.terminalId, orderUid, name, tag, (ticket) => {
+            this.props.setTicket(ticket);
             callback(ticket);
         });
     }
 
-    onCategoryClick = (category) => {
-        this.setState({ selectedCategory: category, isMessageOpen: false });
-        this.refreshMenuItems(category);
-    }
-
     onMenuItemClick = (productId, orderTags = '') => {
-        addOrderToTerminalTicket(this.state.terminalId, productId, 1, orderTags, (ticket) => {
-            this.setState({ ticket: ticket, isMessageOpen: false });
+        if (!this.props.ticket) {
+            Queries.createTerminalTicket(this.props.terminalId, (ticket) => {
+                this.props.setTicket(ticket);
+                this.onMenuItemClick(productId, orderTags);
+            });
+            return;
+        }
+        Queries.addOrderToTerminalTicket(this.props.terminalId, productId, 1, orderTags, (ticket) => {
+            this.props.setTicket(ticket);
+            this.closeMessage();
         });
     }
 
     cleanTicket = () => {
-        clearTerminalTicketOrders(this.state.terminalId, (ticket) => {
-            this.setState({ ticket: ticket });
+        Queries.clearTerminalTicketOrders(this.props.terminalId, (ticket) => {
+            this.props.setTicket(ticket);
+        });
+    }
+
+    selectTable = () => {
+        if(!this.props.ticket)
+        {
+            this.props.updateMessage('Select a ticket');
+            return;
+        }
+        this.context.router.push({
+            pathname: '/entities',
+            query: {
+                terminalId: this.props.terminalId,
+                screenName: appconfig().entityScreenName
+            }
         });
     }
 
     closeTicket = () => {
-        if (this.state.ticket.orders.length == 0) {
-            this.setState({ isMessageOpen: true, message: 'Add orders to create a ticket.' });
+        if (this.props.ticket.orders.length == 0) {
+            this.props.updateMessage('Add orders to create a ticket.');
             return;
         }
-        closeTerminalTicket(this.state.terminalId, (errorMessage) => {
-            postRefresh();
-            
-            // notify other Clients that a Food Order Task has been Printed (for GQL Kitchen Display)
-            broadcastMessage('{"eventName":"TASK_PRINTED","terminal":"Server","userName":"Administrator","productType":"Food"}');
+        Queries.closeTerminalTicket(this.props.terminalId, (errorMessage) => {
+            Queries.postRefresh();
 
-            this.setState({ errorMessage: errorMessage, isMessageOpen: true, message: 'Ticket sucsessfully created!' });
-            createTerminalTicket(this.state.terminalId, (ticket) => {
-                this.setState({ ticket: ticket });
-            });
+            // notify other Clients that a Food Order Task has been Printed (for GQL Kitchen Display)
+            Queries.broadcastMessage('{"eventName":"TASK_PRINTED","terminal":"Server","userName":"Administrator","productType":"Food"}');
+            this.setState({ errorMessage: errorMessage });
+
+            this.props.updateMessage('Ticket sucsessfully created!');
+            this.props.setTicket(undefined);
+            // Queries.createTerminalTicket(this.props.terminalId, (ticket) => {
+            //     this.props.setTicket(ticket);
+            // });
         });
     }
 
     changePortion = (orderUid, portion, callback) => {
-        updateOrderPortionOfTerminalTicket(this.state.terminalId, orderUid, portion, (ticket) => {
-            this.setState({ ticket });
+        Queries.updateOrderPortionOfTerminalTicket(this.props.terminalId, orderUid, portion, (ticket) => {
+            this.props.setTicket(ticket);
             if (callback) callback();
         });
     }
 
     cancelOrder = (orderUid) => {
-        cancelOrderOnTerminalTicket(this.state.terminalId, orderUid, (ticket) => {
-            this.setState({ ticket });
+        Queries.cancelOrderOnTerminalTicket(this.props.terminalId, orderUid, (ticket) => {
+            this.props.setTicket(ticket);
         });
     }
 
-    handleRequestCloseMessage = () => {
-        this.setState({
-            isMessageOpen: false
-        });
+    closeMessage = () => {
+        if (this.props.isMessageOpen)
+            this.props.closeMessage();
     };
 }
+
+App.contextTypes = {
+    router: React.PropTypes.object
+}
+
+App.defaultProps = {
+    message: '',
+    isMessageOpen: false,
+    menu: { categories: [] },
+    menuItems: []
+}
+
+App.PropTypes = {
+    terminalId: PropTypes.number,
+    message: PropTypes.object,
+    isMessageOpen: PropTypes.boolean,
+    ticket: PropTypes.object
+}
+
+const mapStateToProps = state => ({
+    terminalId: state.app.get('terminalId'),
+    message: state.app.getIn(['message', 'text']),
+    isMessageOpen: state.app.getIn(['message', 'isOpen']),
+    ticket: state.app.get('ticket')
+})
+
+const mapDispatchToProps = ({
+    changeTerminalId: Actions.chageTerminalId,
+    updateMessage: Actions.updateMessage,
+    closeMessage: Actions.closeMessage,
+    setTicket: Actions.setTicket
+})
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(App)
