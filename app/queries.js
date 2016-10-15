@@ -11,10 +11,44 @@ $.postJSON = function (query, callback) {
         'url': config.GQLurl,
         'contentType': 'application/json',
         'data': data,
-        'dataType': 'json',
-        'success': callback
-    });
+        'dataType': 'json'
+    })
+        .done(response => { if (callback) callback(response) })
+        .fail(response => { if (callback) callback(response.responseJSON) });
 };
+
+export function getTerminalTicket(terminalId, callback) {
+    var query = getGetTerminalTicketScript(terminalId);
+    $.postJSON(query, function (response) {
+        if (response.errors) {
+            if (callback) callback(undefined);
+        } else {
+            if (callback) callback(response.data.ticket);
+        }
+    });
+}
+
+export function loadTerminalTicket(terminalId, ticketId, callback) {
+    var query = getLoadTerminalTicketScript(terminalId, ticketId);
+    $.postJSON(query, function (response) {
+        if (response.errors) {
+            if (callback) callback(undefined);
+        } else {
+            if (callback) callback(response.data.ticket);
+        }
+    });
+}
+
+export function getTerminalTickets(terminalId, callback) {
+    var query = getGetTerminalTicketsScript(terminalId);
+    $.postJSON(query, function (response) {
+        if (response.errors) {
+            if (callback) callback(undefined);
+        } else {
+            if (callback) callback(response.data.tickets);
+        }
+    });
+}
 
 export function postRefresh() {
     var query = 'mutation m{postTicketRefreshMessage(id:0){id}}';
@@ -105,17 +139,6 @@ export function getTerminalExists(terminalId, callback) {
             //handle
         } else {
             if (callback) callback(response.data.result);
-        }
-    });
-}
-
-export function getTerminalTicket(terminalId, callback) {
-    var query = getGetTerminalTicketScript(terminalId);
-    $.postJSON(query, function (response) {
-        if (response.errors) {
-            //handle
-        } else {
-            if (callback) callback(response.data.ticket);
         }
     });
 }
@@ -265,9 +288,22 @@ function getCreateTerminalTicketScript(terminalId) {
 }
 
 function getGetTerminalTicketScript(terminalId) {
-    return `mutation m{
+    return `query q{
             ticket:getTerminalTicket(terminalId:"${terminalId}")
         ${getTicketResult()}}`;
+}
+
+function getLoadTerminalTicketScript(terminalId, ticketId) {
+    return `mutation m{
+            ticket:loadTerminalTicket(terminalId:"${terminalId}", ticketId:"${ticketId}")
+        ${getTicketResult()}}`;
+}
+
+
+function getGetTerminalTicketsScript(terminalId) {
+    return `query q{
+            tickets:getTerminalTickets(terminalId:"${terminalId}")
+        {id,date,lastOrderDate,remaining,number,entities{type,name}}}`;
 }
 
 function getClearTerminalTicketScript(terminalId) {
@@ -301,7 +337,7 @@ function getCloseTerminalTicketScript(terminalId) {
 }
 
 function getGetTerminalExistsScript(terminalId) {
-    return `mutation m{
+    return `query q{
             result:getTerminalExists(terminalId:"${terminalId}")}`;
 }
 

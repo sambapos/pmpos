@@ -4,9 +4,8 @@ import {connect} from 'react-redux';
 const TicketTotal = ({ticket}) => {
 
     const getTicketTotal = () => {
-        return ticket ? ticket.totalAmount.toFixed(2) : 0;
+        return ticket ? ticket.totalAmount.toFixed(2) : '';
     }
-
     return (
         <div className="totals">
             <span className="ticketTotalLabel">Total: </span>

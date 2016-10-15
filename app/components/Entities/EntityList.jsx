@@ -4,8 +4,14 @@ import { connect } from 'react-redux';
 import ReactMarkdown from 'react-markdown';
 import { changeEntityOfTerminalTicket, getEntityScreenItems } from '../../queries';
 import * as Actions from '../../actions';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 
 class EntityListButton extends React.Component {
+
+    constructor(props){
+        super(props);
+        this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+    }
 
     render() {
         const style = {
@@ -23,15 +29,16 @@ class EntityListButton extends React.Component {
             'width':'100%'
         };
         
-        return (<RaisedButton
-            style={style}
-            className='entityButton flexButton'
-            backgroundColor={this.props.backgroundColor}
-            onClick={this.props.onClick}>
-            <div style={style2}>
-                <ReactMarkdown source={this.props.caption} />
-            </div>
-        </RaisedButton>)
+        return ( 
+            <RaisedButton
+                style={style}
+                className='entityButton flexButton'
+                backgroundColor={this.props.color}
+                onClick={this.props.onClick}>
+                <div style={style2}>
+                    <ReactMarkdown source={this.props.caption} />
+                </div>
+            </RaisedButton>);
     }
 }
 
@@ -60,9 +67,8 @@ class EntityList extends React.Component {
                         key={x.name}
                         caption={x.caption}
                         labelColor={x.labelColor}
-                        backgroundColor={x.color}
-                        onClick={(e) => this.selectEntity(x.name)}
-                        />
+                        color={x.color}
+                        onClick={(e) => this.selectEntity(x.name)} />
                 )}
             </div>
         );

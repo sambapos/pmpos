@@ -4,7 +4,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 export default class TicketTags extends React.Component {
     render() {
         const {ticket} = this.props;
-        if (ticket.tags && ticket.tags.length > 0)
+        if (ticket && ticket.tags && ticket.tags.length > 0)
             return (
                 <div className="ticketTags">
                     {ticket.tags.map(({tagName, tag}) =>

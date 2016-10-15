@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { appconfig } from '../config';
 import uuid from 'uuid';
 import Header from './Header';
 import Menu from './Menu';
@@ -8,6 +9,7 @@ import Orders from './Orders';
 import TicketTotal from './TicketTotal';
 import TicketTags from './TicketTags';
 import Commands from './Commands';
+import MyTickets from './MyTickets';
 import Signalr from '../signalr';
 import Snackbar from 'material-ui/Snackbar';
 import * as Queries from '../queries';
@@ -28,6 +30,7 @@ class App extends Component {
             });
         }
         else Queries.registerTerminal((terminalId) => this.updateTerminalId(terminalId));
+
         if (this.props.terminalId) return;
         Signalr.connect(() => {
             console.log('Connected!!!');
@@ -37,15 +40,13 @@ class App extends Component {
     updateTerminalId(terminalId) {
         localStorage['terminalId'] = terminalId;
         this.props.changeTerminalId(terminalId);
-        Queries.createTerminalTicket(terminalId, (ticket) => {
-            this.props.setTicket(ticket);
-        });
     }
 
     getHeader(ticket = { entities: [] }) {
-        var title = 'New Ticket';
+        var title = ticket.id === undefined ? 'PM-POS' :
+            ticket.id > 0 ? 'Ticket' : 'New Ticket';
         var entityList = ticket != null && ticket.entities.length > 0 ? ticket.entities.map(x => x.name).join() : undefined;
-        return title + (entityList?` (${entityList})`:'');
+        return title + (entityList ? ` (${entityList})` : '');
     }
 
     render() {
@@ -60,6 +61,7 @@ class App extends Component {
                         getOrderTags={this.getOrderTags}
                         onCancelOrder={this.cancelOrder}
                         onOrderTagSelected={this.onOrderTagSelected} />
+                    <MyTickets ticket={ticket} onClick={this.onTicketClick} />
                 </div>
                 <TicketTags ticket={ticket} />
                 <Commands commands={[
@@ -77,6 +79,13 @@ class App extends Component {
         );
     }
 
+    onTicketClick = (ticketId) => {
+        console.log('Ticket Open', ticketId);
+        Queries.loadTerminalTicket(this.props.terminalId, ticketId, (ticket) => {
+            this.props.setTicket(ticket);
+        });
+    }
+
     getOrderTags = (orderUid, callback) => {
         Queries.getOrderTagsForTerminal(this.props.terminalId, orderUid, (orderTags) => {
             callback(orderTags);
@@ -91,6 +100,13 @@ class App extends Component {
     }
 
     onMenuItemClick = (productId, orderTags = '') => {
+        if (!this.props.ticket) {
+            Queries.createTerminalTicket(this.props.terminalId, (ticket) => {
+                this.props.setTicket(ticket);
+                this.onMenuItemClick(productId, orderTags);
+            });
+            return;
+        }
         Queries.addOrderToTerminalTicket(this.props.terminalId, productId, 1, orderTags, (ticket) => {
             this.props.setTicket(ticket);
             this.closeMessage();
@@ -104,7 +120,18 @@ class App extends Component {
     }
 
     selectTable = () => {
-        this.context.router.push({ pathname: '/entities', query: { terminalId: this.props.terminalId,screenName:'All Tables' } });
+        if(!this.props.ticket)
+        {
+            this.props.updateMessage('Select a ticket');
+            return;
+        }
+        this.context.router.push({
+            pathname: '/entities',
+            query: {
+                terminalId: this.props.terminalId,
+                screenName: appconfig().entityScreenName
+            }
+        });
     }
 
     closeTicket = () => {
@@ -120,9 +147,10 @@ class App extends Component {
             this.setState({ errorMessage: errorMessage });
 
             this.props.updateMessage('Ticket sucsessfully created!');
-            Queries.createTerminalTicket(this.props.terminalId, (ticket) => {
-                this.props.setTicket(ticket);
-            });
+            this.props.setTicket(undefined);
+            // Queries.createTerminalTicket(this.props.terminalId, (ticket) => {
+            //     this.props.setTicket(ticket);
+            // });
         });
     }
 
@@ -152,7 +180,6 @@ App.contextTypes = {
 App.defaultProps = {
     message: '',
     isMessageOpen: false,
-    ticket: { id: 0, totalAmount: 0, orders: [], entities: [], tags: [] },
     menu: { categories: [] },
     menuItems: []
 }
