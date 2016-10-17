@@ -1,16 +1,10 @@
 import React from 'react';
 import AppBar from 'material-ui/AppBar';
-import { List, ListItem } from 'material-ui/List';
 import Paper from 'material-ui/Paper';
-import Subheader from 'material-ui/Subheader';
+import { List, ListItem, ListSubHeader, ListDivider, ListItemContent, ListCheckbox } from 'react-toolbox/lib/list';
 import { connect } from 'react-redux';
 import { getTerminalTickets } from '../queries';
 import * as Actions from '../actions';
-
-const style = {
-    position: 'fixed',
-    top: 0
-};
 
 const Total = (p) => {
     return <b>{p.total}</b>
@@ -19,12 +13,15 @@ const Total = (p) => {
 class MyTicketLine extends React.Component {
     render() {
         const {ticket, onClick = () => { } } = this.props;
-        return (<ListItem onClick={onClick.bind(null, ticket.id)}>
-            <div style={{ 'display': 'flex' }}>
-                <span style={{ 'flex': '1', 'fontWeight': 'bold' }}>{ticket.number}</span>
-                <span style={{ 'flex': '3' }}>{ticket.entities.map(x=>x.name).join()}</span>
-                <span >{ticket.remaining.toFixed(2)}</span>
-            </div>
+        return (<ListItem selectable ripple={false}
+            onClick={onClick.bind(null, ticket.id)}>
+            <ListItemContent>
+                <div style={{ 'display': 'flex', 'margin': '4px' }}>
+                    <span className="myListTicketNumber">{ticket.number}</span>
+                    <span className="myListEntity">{ticket.entities.map(x => x.name).join()}</span>
+                    <span className="myListRemaining">{ticket.remaining.toFixed(2)}</span>
+                </div>
+            </ListItemContent>
         </ListItem>)
     }
 }
@@ -51,7 +48,7 @@ class MyTickets extends React.Component {
         return (
             <Paper className="myTickets">
                 <List>
-                    <Subheader>My Tickets</Subheader>
+                    <ListSubHeader caption="My Tickets" />
                     {this.props.items.sort((x, y) => new Date(y.lastOrderDate) - new Date(x.lastOrderDate))
                         .map((x) => <MyTicketLine key={x.id} ticket={x} onClick={this.props.onClick} />)}
                 </List>

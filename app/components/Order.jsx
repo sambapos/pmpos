@@ -1,12 +1,11 @@
 import React from 'react';
-import {List, ListItem} from 'material-ui/List';
-import Divider from 'material-ui/Divider';
+import { List, ListItem, ListSubHeader, ListDivider, ListItemContent, ListCheckbox } from 'react-toolbox/lib/list';
 import Portions from './Portions';
 import OrderTags from './OrderTags';
 import SelectedOrderTags from './SelectedOrderTags';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-import {getProductPortions, getOrderTagsForTerminal} from '../queries';
+import { getProductPortions, getOrderTagsForTerminal } from '../queries';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 
 const customContentStyle = {
@@ -30,17 +29,17 @@ export default class Order extends React.Component {
             <FlatButton
                 label="Remove Order"
                 primary={true}
-                onClick={this.onOrderCancelled}/>,
+                onClick={this.onOrderCancelled} />,
             <FlatButton
                 label="Close"
                 primary={true}
-                onClick={this.handleDetailsClose}/>
+                onClick={this.handleDetailsClose} />
         ];
 
         var orderName = portion != 'Normal' ? name + '.' + portion : name;
 
         const orderLine =
-            <div>
+            <div className="orderContent">
                 <div className="order">
                     <span className="orderQuantity">{quantity}</span>
                     <span className="orderName">{orderName}</span>
@@ -49,13 +48,15 @@ export default class Order extends React.Component {
                         <span >{price}</span>
                     </span>
                 </div>
-                <SelectedOrderTags orderTags={orderTags}/>
+                <SelectedOrderTags orderTags={orderTags} />
             </div>;
 
         return (
             <div key={id}>
-                <ListItem  className="order" onClick={this.handleDetailsOpen.bind(null, productId, portion) }>
-                    {orderLine}
+                <ListItem selectable ripple={false} onClick={this.handleDetailsOpen.bind(null, productId, portion)}>
+                    <ListItemContent>
+                        {orderLine}
+                    </ListItemContent>
                 </ListItem>
                 <Dialog
                     title={orderLine}
@@ -67,12 +68,11 @@ export default class Order extends React.Component {
                     <div className='dialogContent'>
                         <Portions portions={this.state.portions}
                             selectedPortion={this.state.selectedPortion}
-                            onClick={this.onPortionSelected}/>
+                            onClick={this.onPortionSelected} />
                         <OrderTags orderTags={this.state.orderTags}
-                            onClick={this.onOrderTagSelected}/>
+                            onClick={this.onOrderTagSelected} />
                     </div>
                 </Dialog>
-                <Divider/>
             </div>
         );
     }

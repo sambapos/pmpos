@@ -1,5 +1,6 @@
 import React from 'react';
 import Order from './Order';
+import { List, ListItem, ListSubHeader, ListDivider, ListItemContent, ListCheckbox } from 'react-toolbox/lib/list';
 import ReactDom from 'react-dom';
 import Paper from 'material-ui/Paper';
 import { postRefresh } from '../queries';
@@ -10,6 +11,7 @@ export default class Orders extends React.Component {
         if (!ticket) return null;
         return (
             <Paper className="orders" id="orders">
+            <List>
                 {ticket.orders.map(({uid, name, quantity, price, priceTag, portion, productId, tags}) =>
                     <Order key={uid}
                         name={name}
@@ -26,6 +28,7 @@ export default class Orders extends React.Component {
                         onOrderTagSelected={onOrderTagSelected}
                         onCancelOrder={onCancelOrder} />
                 )}
+                </List>
             </Paper>
         );
     }
