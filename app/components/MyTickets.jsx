@@ -19,13 +19,13 @@ const Total = (p) => {
 class MyTicketLine extends React.Component {
     render() {
         const {ticket, onClick = () => { } } = this.props;
-        return (<ListItem onClick={onClick.bind(null, ticket.id)}>
+        return (<li onClick={onClick.bind(null, ticket.id)}>
             <div style={{ 'display': 'flex' }}>
                 <span style={{ 'flex': '1', 'fontWeight': 'bold' }}>{ticket.number}</span>
                 <span style={{ 'flex': '3' }}>{ticket.entities.map(x=>x.name).join()}</span>
                 <span >{ticket.remaining.toFixed(2)}</span>
             </div>
-        </ListItem>)
+        </li>)
     }
 }
 
@@ -50,11 +50,11 @@ class MyTickets extends React.Component {
         if (!this.props.items) return (<div>Loading...</div>);
         return (
             <Paper className="myTickets">
-                <List>
+                <ul>
                     <Subheader>My Tickets</Subheader>
                     {this.props.items.sort((x, y) => new Date(y.lastOrderDate) - new Date(x.lastOrderDate))
                         .map((x) => <MyTicketLine key={x.id} ticket={x} onClick={this.props.onClick} />)}
-                </List>
+                </ul>
             </Paper>
         );
     }

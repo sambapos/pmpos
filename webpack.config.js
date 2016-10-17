@@ -1,6 +1,7 @@
 const path = require('path');
 const merge = require('webpack-merge');
 const validate = require('webpack-validator');
+const Joi = require('webpack-validator').Joi
 
 const parts = require('./libs/parts');
 
@@ -99,6 +100,7 @@ switch (TARGET) {
           style: PATHS.style
         }
       },
+      parts.loadSass(),
       parts.setupCSS(PATHS.style),
       parts.devServer({
         // Customize host/port here if needed
@@ -111,6 +113,10 @@ switch (TARGET) {
     );
 }
 
+const schemaExtension = Joi.object({
+  sassLoader: Joi.any()
+})
+
 module.exports = validate(config, {
-  quiet: true
+  quiet: true,schemaExtension: schemaExtension
 });

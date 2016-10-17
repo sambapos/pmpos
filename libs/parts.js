@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const path = require('path');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -8,10 +9,10 @@ exports.indexTemplate = function (options) {
   return {
     plugins: [
       new HtmlWebpackPlugin({
-        template: "default_index.ejs",
+        template: 'default_index.ejs',
         title: options.title,
         appMountId: options.appMountId,
-        mobile:true,
+        mobile: true,
         inject: false
       })
     ]
@@ -40,7 +41,7 @@ exports.loadJSON = function () {
         {
           test: /\.json$/,
           loader: 'json'
-        },
+        }
       ]
     }
   };
@@ -154,6 +155,22 @@ exports.setupCSS = function (paths) {
   };
 }
 
+exports.loadSass = function () {
+  return {
+    module: {
+      loaders: [
+        {
+          test: /\.scss$/,
+          loader: 'style-loader!css-loader?sourceMap&modules&importLoaders=1&localIdentName=[name]-[local]___[hash:base64:5]!sass-loader?sourceMap'
+        }
+      ]
+    },
+    sassLoader: {
+      includePaths: [path.resolve(__dirname, './app')]
+    }
+  };
+}
+
 exports.minify = function () {
   return {
     plugins: [
@@ -220,6 +237,10 @@ exports.extractCSS = function (paths) {
           test: /\.css$/,
           loader: ExtractTextPlugin.extract('style', 'css'),
           include: paths
+        },
+        {
+          test: /\.scss$/,
+          loader: ExtractTextPlugin.extract('style', 'css?sourceMap&modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!sass')
         }
       ]
     },

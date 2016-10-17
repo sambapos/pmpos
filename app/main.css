@@ -112,7 +112,6 @@ body {
   overflow-x: hidden;
   margin: 1px;
   flex:1;
-  align-content: flex-start;
 }
 
 .commands{
@@ -143,21 +142,14 @@ body {
     transform: translate(-50%, -50%);
 }
 
-.menuButton {
-  flex: 1 1 40%;
-  margin: 4px;
-  font-size: 1em;
-  display: flex;
-}
-
-.menuButton p{
+/*.menuButton p{
     margin: 0;
     position: absolute;
     top: 50%;
     left: 50%;
     margin-right: -50%;
     transform: translate(-50%, -50%);
-}
+}*/
 
 .order{
   display: flex;
@@ -269,4 +261,18 @@ body {
 
 .mrkdwn p {
   margin: 0;
+}
+
+.buttonContent p {
+    word-break: normal;
+    white-space: normal;
+    line-height: 2rem;
+    font-size: 1.1em;
+}
+
+@media (min-width: 800px) {
+  .buttonContent p {
+    font-size: 1.6em;
+    line-height: 2.6rem;
+  }
 }
