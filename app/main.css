@@ -35,7 +35,7 @@ body {
 }
 
 .menu {
-  height: 45%;
+  flex:1;
   display: flex;
   flex-direction: column;
   margin:4px 0px;
@@ -44,7 +44,6 @@ body {
 @media (min-width: 480px) {
     .menu{
       width: 50%;
-      height: 97%;
       flex-direction: row;
     }
 	}
@@ -58,21 +57,33 @@ body {
 
 .orders{
   flex:1;
-  overflow-x: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   margin: 4px 0px;
 }
 
 .myTickets{
   flex:1;
-  overflow-x: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   margin: 4px 0px;
 }
 
-@media (min-width: 480px) {
-    .orders{
-      height: 97%;
-    }
-	}
+.myListTicketNumber{
+  font-weight: bold;
+  flex:1;
+  margin-right: 30px;
+}
+
+.myListEntity{
+  flex:1 1 50%;
+}
+
+.myListRemaining{
+  flex: 1 1 30%;
+  font-size:1.1em;
+  text-align: right;
+}
 
 .categories {
   white-space: nowrap;
@@ -109,7 +120,6 @@ body {
   display: flex;
   flex-wrap : wrap;
   overflow-y: auto;
-  overflow-x: hidden;
   margin: 1px;
   flex:1;
 }
@@ -150,6 +160,10 @@ body {
     margin-right: -50%;
     transform: translate(-50%, -50%);
 }*/
+
+.orderContent{
+  margin: 6px 0;
+}
 
 .order{
   display: flex;
@@ -272,7 +286,7 @@ body {
 
 @media (min-width: 800px) {
   .buttonContent p {
-    font-size: 1.6em;
+    font-size: 1.3em;
     line-height: 2.6rem;
   }
 }
