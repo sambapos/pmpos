@@ -5,13 +5,21 @@ import { List, ListItem, ListSubHeader, ListDivider, ListItemContent, ListCheckb
 import { connect } from 'react-redux';
 import { getTerminalTickets } from '../queries';
 import * as Actions from '../actions';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 
 const Total = (p) => {
     return <b>{p.total}</b>
 }
 
 class MyTicketLine extends React.Component {
+
+   constructor(props){
+       super(props);
+       this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+   }
+
     render() {
+        console.log('My Ticket Render');
         const {ticket, onClick = () => { } } = this.props;
         return (<ListItem selectable ripple={false}
             onClick={onClick.bind(null, ticket.id)}>
@@ -36,17 +44,23 @@ class MyTickets extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.terminalId && nextProps.ticket !== this.props.ticket) {
-            this.loadItems(nextProps.terminalId);
+        if (nextProps.terminalId && this.props.ticket && nextProps.ticket == undefined) {
+            {
+                console.log('Reload 1',nextProps.ticket,this.props.ticket);
+                this.loadItems(nextProps.terminalId);
+            }
         } else if (nextProps.terminalId && nextProps.terminalId !== this.props.terminalId)
-            this.loadItems(nextProps.terminalId);
+            {
+                console.log('Reload 2',nextProps.terminalId,this.props.terminalId);
+                this.loadItems(nextProps.terminalId);
+            }
     }
 
     render() {
         if (this.props.ticket) return null;
         if (!this.props.items) return (<div>Loading...</div>);
         return (
-            <Paper className="myTickets">
+            <Paper className="myTickets" style={{'borderRadius':'0'}}>
                 <List>
                     <ListSubHeader caption="My Tickets" />
                     {this.props.items.sort((x, y) => new Date(y.lastOrderDate) - new Date(x.lastOrderDate))

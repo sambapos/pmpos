@@ -254,7 +254,7 @@ export function broadcastMessage(msg, callback) {
 }
 
 function getMenuScript() {
-    return `{menu:getMenu(name:"${config.menuName}"){categories{id,name,color,foreground,menuItems{id,name,color,foreground,productId,defaultOrderTags}}}}`;
+    return `{menu:getMenu(name:"${config.menuName}"){categories{id,name,color,foreground,menuItems{id,name,color,caption,foreground,productId,defaultOrderTags}}}}`;
 }
 
 function getProductPortionsScript(productId) {

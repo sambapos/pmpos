@@ -1,17 +1,23 @@
 import React from 'react';
 import ReactDom from 'react-dom';
 import {connect} from 'react-redux';
-import RaisedButton from 'material-ui/RaisedButton';
+import { Button } from 'react-toolbox/lib/button';
 
 class CategoryButton extends React.Component {
     render() {
         const { foreground, selectedCategory, name, color, onClick } = this.props;
-        return <RaisedButton
+        let caption = selectedCategory === name ? <b>-{name}-</b> : name;
+        const style ={'color':foreground,
+                      'backgroundColor':color,
+                      'lineHeight':'1.3',
+                      'wordWrap': 'breakWord',
+                      'whiteSpace': 'normal',
+                      'minHeight': '65px'
+                     };
+        return <Button
             className = 'categoryButton'
-            label = {selectedCategory === name ? <b>-{name}-</b> : name}
-            labelColor = {foreground}
-            backgroundColor={color}
-            onClick={onClick.bind(null, name) }/>
+            style = {style}
+            onClick={onClick.bind(null, name) }>{caption}</Button>
     }
 }
 

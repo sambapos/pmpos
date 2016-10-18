@@ -1,5 +1,5 @@
 import React from 'react';
-import RaisedButton from 'material-ui/RaisedButton';
+import { Button } from 'react-toolbox/lib/button';
 import { connect } from 'react-redux';
 import ReactMarkdown from 'react-markdown';
 import { changeEntityOfTerminalTicket, getEntityScreenItems } from '../../queries';
@@ -8,37 +8,31 @@ import PureRenderMixin from 'react-addons-pure-render-mixin';
 
 class EntityListButton extends React.Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
         this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
     }
 
     render() {
         const style = {
-            'display': 'flex',
-            'flex':'1',
-            'height':'75px'
-        };
-        const style2 = {
             'color': this.props.labelColor,
-            'flex':'1',
-            'position':'absolute',
-            'top':'0',
-            'left':'0',
-            'height':'100%',
-            'width':'100%'
+            'backgroundColor': this.props.color,
+            'margin': '4px',
+            'height': 'auto',
+            'minHeight': '65px',
+            'flex': '1 1 11%',
+            'lineHeight': '1.3',
+            'wordWrap': 'breakWord',
+            'whiteSpace': 'normal'
         };
-        
-        return ( 
-            <RaisedButton
+
+        return (
+            <Button
                 style={style}
-                className='entityButton flexButton'
-                backgroundColor={this.props.color}
+                className='entityButton'
                 onClick={this.props.onClick}>
-                <div style={style2}>
-                    <ReactMarkdown source={this.props.caption} />
-                </div>
-            </RaisedButton>);
+                <ReactMarkdown source={this.props.caption} />
+            </Button>);
     }
 }
 

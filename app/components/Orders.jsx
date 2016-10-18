@@ -10,7 +10,7 @@ export default class Orders extends React.Component {
         const {ticket, onClick = () => { }, onChangePortion = () => { }, onCancelOrder = () => { }, onOrderTagSelected = () => { } } = this.props;
         if (!ticket) return null;
         return (
-            <Paper className="orders" id="orders">
+            <Paper className="orders" style={{'borderRadius':'0'}}>
             <List>
                 {ticket.orders.map(({uid, name, quantity, price, priceTag, portion, productId, tags}) =>
                     <Order key={uid}
