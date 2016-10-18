@@ -67,6 +67,8 @@ body {
   overflow-x: hidden;
   overflow-y: auto;
   margin: 4px 0px;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 
 .myListTicketNumber{
@@ -114,6 +116,7 @@ body {
 
 .categoryButton{
   margin: 4px;
+  flex: 1;
 }
 
 .menuItems{

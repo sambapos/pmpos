@@ -11,6 +11,9 @@ export default class MenuItem extends React.Component {
             'margin': '4px',
             'height': 'auto',
             'minHeight': '65px',
+            'lineHeight': '1.3',
+            'wordWrap': 'breakWord',
+            'whiteSpace': 'normal',
             'color': menuItem.foreground,
             'backgroundColor': menuItem.color
         };
@@ -27,7 +30,7 @@ export default class MenuItem extends React.Component {
             // </div>
             <Button style={style}
                 raised onClick={onClick.bind(null, menuItem.productId, menuItem.defaultOrderTags)}>
-                <ReactMarkdown className="buttonContent" source={menuItem.name} />
+                <ReactMarkdown className="buttonContent" source={menuItem.caption} />
             </Button>
         );
     }
