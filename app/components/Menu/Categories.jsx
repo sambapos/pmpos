@@ -12,7 +12,7 @@ class CategoryButton extends React.Component {
                       'lineHeight':'1.3',
                       'wordWrap': 'breakWord',
                       'whiteSpace': 'normal',
-                      'minHeight': '65px'
+                      'minHeight': '45px'
                      };
         return <Button
             className = 'categoryButton'

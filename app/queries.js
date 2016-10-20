@@ -3,12 +3,14 @@ import jQuery from 'jquery';
 import { appconfig } from './config';
 
 var config = appconfig();
+var accessToken = '';
 
 $.postJSON = function (query, callback) {
     var data = JSON.stringify({ query: query });
     return jQuery.ajax({
         'type': 'POST',
         'url': config.GQLurl,
+        headers: { 'Authorization': 'Bearer ' + accessToken },
         'contentType': 'application/json',
         'data': data,
         'dataType': 'json'
@@ -16,6 +18,20 @@ $.postJSON = function (query, callback) {
         .done(response => { if (callback) callback(response) })
         .fail(response => { if (callback) callback(response.responseJSON) });
 };
+
+export function Authorize(password = 'password', callback) {
+    var data = JSON.stringify({ grant_type: 'password', username: 'samba', password });
+    jQuery.ajax({
+        'type': 'POST',
+        'url': config.GQLserv + '/Token',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        data: $.param({ grant_type: 'password', username: 'samba', password: 'password' })
+    }).done(response => {
+        console.log('AUTH', response);
+        accessToken = response.access_token
+        callback();
+    });
+}
 
 export function getTerminalTicket(terminalId, callback) {
     var query = getGetTerminalTicketScript(terminalId);

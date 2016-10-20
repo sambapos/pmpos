@@ -9,11 +9,12 @@ import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import { Router, Route, hashHistory } from 'react-router';
-import {createStore} from 'redux';
-import {Provider} from 'react-redux';
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
 import reducer from './reducers';
+import { Authorize } from './queries';
 
-const store = createStore(reducer,window.devToolsExtension && window.devToolsExtension());
+const store = createStore(reducer, window.devToolsExtension && window.devToolsExtension());
 
 if (process.env.NODE_ENV !== 'production') {
   React.Perf = require('react-addons-perf');
@@ -24,7 +25,7 @@ injectTapEventPlugin();
 const AppHandler = () => (
   <MuiThemeProvider>
     <Provider store={store}>
-      <Router history={hashHistory }>
+      <Router history={hashHistory}>
         <Route path="/" component={App}></Route>
         <Route path="/entities(/:terminalId)(/:screenName)" component={EntityList}></Route>
       </Router>
@@ -32,7 +33,11 @@ const AppHandler = () => (
   </MuiThemeProvider>
 );
 
-ReactDOM.render(
-  <AppHandler />,
-  document.getElementById('app')
-);
+Authorize('password', () => {
+  ReactDOM.render(
+    <AppHandler />,
+    document.getElementById('app')
+  );
+})
+
+
