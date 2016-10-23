@@ -1,12 +1,6 @@
 import React from 'react';
-import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
 import Subheader from 'material-ui/Subheader';
-import {List, ListItem} from 'material-ui/List';
 import OrderTag from './OrderTag';
-import Divider from 'material-ui/Divider';
-import Paper from 'material-ui/Paper';
 
 export default class OrderTagGroup extends React.Component {
     render() {
