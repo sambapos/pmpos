@@ -40,7 +40,7 @@ export function appconfig() {
     var departmentName = 'Restaurant';
     var ticketTypeName = 'Ticket';
     var menuName = 'Menu';
-    var entityScreenName = 'All Tables';
+    var entityScreenName = 'Tables';
 
     // assign some stuff to the Object
     // you can override the "auto config" here if you wish

@@ -1,8 +1,6 @@
 import React from 'react';
-import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
 import ReactMarkdown from 'react-markdown';
+import { Button } from 'react-toolbox/lib/button';
 
 export default class OrderTag extends React.Component {
 
@@ -13,17 +11,26 @@ export default class OrderTag extends React.Component {
 
     render() {
         const {name, groupName, caption, color, labelColor, onClick = () => { } } = this.props;
+            const style = {
+                'flex': '1 1 10%',
+                'margin': '4px',
+                'height': 'auto',
+                'minHeight': '50px',
+                'maxHeight': '50%',
+                'lineHeight': '2rem',
+                'wordWrap': 'breakWord',
+                'whiteSpace': 'normal',
+                'textTransform': 'none',
+                'color': labelColor,
+                'backgroundColor': color
+        };
         return (
-            <RaisedButton
-                style={{ 'height': '50px' }}
+            <Button raised
+                style={style}
                 className='orderTagButton'
-                backgroundColor={color}
                 onClick={onClick.bind(null, groupName, name) }>
-                <span style={{ color: labelColor, padding: 4 }}
-                    className='orderTagButtonContent'>
-                    <ReactMarkdown source={caption}/>
-                </span>
-            </RaisedButton>
+                    <ReactMarkdown source={caption} />
+            </Button>
         );
     }
 }

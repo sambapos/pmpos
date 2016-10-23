@@ -1,8 +1,5 @@
 import React from 'react';
-import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
 import OrderTagGroup from './OrderTagGroup';
-import Subheader from 'material-ui/Subheader';
 
 export default class OrderTags extends React.Component {
   render() {
