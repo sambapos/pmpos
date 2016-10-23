@@ -12,8 +12,7 @@ export default class Header extends React.Component {
       <AppBar
         className = "header"
         title={this.props.header}
-        iconClassNameRight="muidocs-icon-navigation-expand-more"
-        />
+        iconClassNameRight="muidocs-icon-navigation-expand-more"/>
     );
   }
 }

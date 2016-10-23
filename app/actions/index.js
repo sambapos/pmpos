@@ -20,6 +20,9 @@ export const setTicket = ticket => ({
     type: types.SET_TICKET, ticket
 });
 
+export const ticketsNeedsRefresh = () => ({ type: types.TICKETS_NEEDS_REFRESH })
+export const ticketsRefreshed = () => ({ type: types.TICKETS_REFRESHED })
+
 export const setOrderTagColors = colors => ({ type: types.SET_ORDER_TAG_COLORS, colors });
 export const setMenu = menu => ({ type: types.SET_MENU, menu });
 export const setMenuItems = menuItems => ({ type: types.SET_MENU_ITEMS, menuItems });

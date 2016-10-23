@@ -12,7 +12,7 @@ export default class Orders extends React.Component {
         return (
             <Paper className="orders" style={{'borderRadius':'0'}}>
             <List>
-                {ticket.orders.map(({uid, name, quantity, price, priceTag, portion, productId, tags}) =>
+                {ticket.orders.map(({uid, name, quantity, price, priceTag, portion, productId, tags, locked}) =>
                     <Order key={uid}
                         name={name}
                         quantity={quantity}
@@ -23,6 +23,7 @@ export default class Orders extends React.Component {
                         orderTags={tags}
                         onClick={onClick}
                         orderUid={uid}
+                        locked={locked}
                         getOrderTags={this.props.getOrderTags}
                         onChangePortion={onChangePortion}
                         onOrderTagSelected={onOrderTagSelected}

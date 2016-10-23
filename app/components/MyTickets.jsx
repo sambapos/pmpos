@@ -13,13 +13,12 @@ const Total = (p) => {
 
 class MyTicketLine extends React.Component {
 
-   constructor(props){
-       super(props);
-       this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
-   }
+    constructor(props) {
+        super(props);
+        this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+    }
 
     render() {
-        console.log('My Ticket Render');
         const {ticket, onClick = () => { } } = this.props;
         return (<ListItem selectable ripple={false}
             onClick={onClick.bind(null, ticket.id)}>
@@ -39,28 +38,32 @@ class MyTickets extends React.Component {
     loadItems(terminalId = this.props.terminalId) {
         this.props.loadMyTicketsRequest();
         getTerminalTickets(terminalId, (items) => {
-            this.props.loadMyTicketsSuccess(items);
+            this.props.ticketsRefreshed();
+            if (items) this.props.loadMyTicketsSuccess(items);
+            else this.props.loadMyTicketsFailure()
         })
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.terminalId && this.props.ticket && nextProps.ticket == undefined) {
+        if (nextProps.ticketsNeedsRefresh && !nextProps.isFetching) {
+            console.log('Reload 3', nextProps);
+            this.loadItems(nextProps.terminalId);
+        } else if (nextProps.terminalId && this.props.ticket && nextProps.ticket == undefined) {
             {
-                console.log('Reload 1',nextProps.ticket,this.props.ticket);
+                console.log('Reload 1', nextProps.ticket, this.props.ticket);
                 this.loadItems(nextProps.terminalId);
             }
-        } else if (nextProps.terminalId && nextProps.terminalId !== this.props.terminalId)
-            {
-                console.log('Reload 2',nextProps.terminalId,this.props.terminalId);
-                this.loadItems(nextProps.terminalId);
-            }
+        } else if (nextProps.terminalId && nextProps.terminalId !== this.props.terminalId) {
+            console.log('Reload 2', nextProps.terminalId, this.props.terminalId);
+            this.loadItems(nextProps.terminalId);
+        }
     }
 
     render() {
-        if (this.props.ticket) return null;
+        if (this.props.ticket && !this.props.ticketsNeedsRefresh) return null;
         if (!this.props.items) return (<div>Loading...</div>);
         return (
-            <Paper className="myTickets" style={{'borderRadius':'0'}}>
+            <Paper className="myTickets" style={{ 'borderRadius': '0' }}>
                 <List>
                     <ListSubHeader caption="My Tickets" />
                     {this.props.items.sort((x, y) => new Date(y.lastOrderDate) - new Date(x.lastOrderDate))
@@ -74,12 +77,15 @@ class MyTickets extends React.Component {
 const mapStateToProps = state => ({
     isFetching: state.myTickets.get('isFetching'),
     items: state.myTickets.get('items'),
+    ticketsNeedsRefresh: state.myTickets.get('ticketsNeedsRefresh'),
     terminalId: state.app.get('terminalId')
 })
 
 const mapDispatchToProps = ({
     loadMyTicketsRequest: Actions.loadMyTicketsRequest,
-    loadMyTicketsSuccess: Actions.loadMyTicketsSuccess
+    loadMyTicketsSuccess: Actions.loadMyTicketsSuccess,
+    loadMyTicketsFailure: Actions.loadMyTicketsFailure,
+    ticketsRefreshed: Actions.ticketsRefreshed
 })
 
 export default connect(
