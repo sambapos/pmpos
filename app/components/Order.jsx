@@ -104,6 +104,7 @@ export default class Order extends React.Component {
     }
 
     handleDetailsOpen = (productId, portion) => {
+        if (this.props.locked) return;
         getProductPortions(productId, (portions) => {
             this.setState({ isDetailsOpen: true, portions: portions, selectedPortion: portion });
         });

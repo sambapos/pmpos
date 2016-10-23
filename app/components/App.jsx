@@ -29,11 +29,17 @@ class App extends Component {
                 } else Queries.registerTerminal((terminalId) => this.updateTerminalId(terminalId));
             });
         }
-        else Queries.registerTerminal((terminalId) => this.updateTerminalId(terminalId));
+        else {
+            Queries.registerTerminal((terminalId) => this.updateTerminalId(terminalId));
+        }
 
         if (this.props.terminalId) return;
-        Signalr.connect(() => {
-            console.log('Connected!!!');
+
+        Signalr.connect((message) => {
+            if (message.indexOf('TICKET_REFRESH') > -1) {
+                console.log('Ticket refreshed');
+                this.props.ticketsNeedsRefresh();
+            }
         });
     }
 
@@ -120,8 +126,7 @@ class App extends Component {
     }
 
     selectTable = () => {
-        if(!this.props.ticket)
-        {
+        if (!this.props.ticket) {
             this.props.updateMessage('Select a ticket');
             return;
         }
@@ -144,13 +149,11 @@ class App extends Component {
 
             // notify other Clients that a Food Order Task has been Printed (for GQL Kitchen Display)
             Queries.broadcastMessage('{"eventName":"TASK_PRINTED","terminal":"Server","userName":"Administrator","productType":"Food"}');
-            this.setState({ errorMessage: errorMessage });
 
-            this.props.updateMessage('Ticket sucsessfully created!');
+            this.setState({ errorMessage: errorMessage });
+            if (this.props.ticket.id == 0)
+                this.props.updateMessage('Ticket sucsessfully submitted!');
             this.props.setTicket(undefined);
-            // Queries.createTerminalTicket(this.props.terminalId, (ticket) => {
-            //     this.props.setTicket(ticket);
-            // });
         });
     }
 
@@ -202,7 +205,8 @@ const mapDispatchToProps = ({
     changeTerminalId: Actions.chageTerminalId,
     updateMessage: Actions.updateMessage,
     closeMessage: Actions.closeMessage,
-    setTicket: Actions.setTicket
+    setTicket: Actions.setTicket,
+    ticketsNeedsRefresh: Actions.ticketsNeedsRefresh
 })
 
 export default connect(

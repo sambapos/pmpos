@@ -18,7 +18,7 @@ export default class {
 
         // atempt connection, and handle errors
         connection.start({ jsonp: true })
-            .done(function () { console.log('Now connected, connection ID=' + connection.id); })
-            .fail(function () { console.log('Could not connect'); });
+            .done(function () { console.log('Signalr now connected, connection ID=' + connection.id); })
+            .fail(function () { console.log('Signalr could not connect'); });
     }
 }

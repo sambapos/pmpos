@@ -20,15 +20,13 @@ $.postJSON = function (query, callback) {
 };
 
 export function Authorize(password = 'password', callback) {
-    var data = JSON.stringify({ grant_type: 'password', username: 'samba', password });
     jQuery.ajax({
         'type': 'POST',
         'url': config.GQLserv + '/Token',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         data: $.param({ grant_type: 'password', username: 'samba', password: 'password' })
     }).done(response => {
-        console.log('AUTH', response);
-        accessToken = response.access_token
+        accessToken = response.access_token;
         callback();
     });
 }
@@ -229,7 +227,7 @@ export function getOrderTagsForTerminal(terminalId, orderUid, callback) {
     var query = getGetOrderTagsForTerminalScript(terminalId, orderUid);
     $.postJSON(query, function (response) {
         if (response.errors) {
-            // handle errors
+            callback([]);
         } else {
             if (callback) callback(response.data.orderTags);
         }
@@ -398,6 +396,7 @@ function getTicketResult() {
     calculatePrice,
     increaseInventory,
     decreaseInventory,
+    locked,
     tags{
       tag,tagName,price,quantity,rate,userId
     },
