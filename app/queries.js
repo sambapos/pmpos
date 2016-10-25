@@ -191,7 +191,7 @@ export function changeEntityOfTerminalTicket(terminalId, type, name, callback) {
 }
 
 export function getEntityScreenItems(name, callback) {
-    var query = getGetEntiyScreenItemsScript(name);
+    var query = getGetEntityScreenItemsScript(name);
     $.postJSON(query, function (response) {
         if (response.errors) {
             // handle errors
@@ -371,8 +371,8 @@ function getChangeEntityOfTerminalTicketScript(terminalId, type, name) {
         ${getTicketResult()}}`;
 }
 
-function getGetEntiyScreenItemsScript(name) {
-    return `query q{items:getEntiyScreenItems(name:"${name}"){name,caption,color,labelColor}}`;
+function getGetEntityScreenItemsScript(name) {
+    return `query q{items:getEntityScreenItems(name:"${name}"){name,caption,color,labelColor}}`;
 }
 
 function getGetOrderTagColorsScript() {
