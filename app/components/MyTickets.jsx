@@ -46,6 +46,10 @@ class MyTickets extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.ticketsNeedsRefresh && !nextProps.isFetching) {
+            if (this.props.ticket) {
+                this.props.ticketsRefreshed();
+                return;
+            }
             console.log('Reload 3', nextProps);
             this.loadItems(nextProps.terminalId);
         } else if (nextProps.terminalId && this.props.ticket && nextProps.ticket == undefined) {

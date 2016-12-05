@@ -36,11 +36,11 @@ export function appconfig() {
 
     // Terminal settings
     var terminalName = 'Server'
-    var userName = 'Admin';
+    var userName = 'Administrator';
     var departmentName = 'Restaurant';
     var ticketTypeName = 'Ticket';
     var menuName = 'Menu';
-    var entityScreenName = 'Tables';
+    var entityScreenName = 'All Tables';
 
     // assign some stuff to the Object
     // you can override the "auto config" here if you wish

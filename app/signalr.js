@@ -1,4 +1,4 @@
-import {appconfig} from './config';
+import { appconfig } from './config';
 import $ from 'jquery';
 window.jQuery = $;
 require('ms-signalr-client');
@@ -20,5 +20,11 @@ export default class {
         connection.start({ jsonp: true })
             .done(function () { console.log('Signalr now connected, connection ID=' + connection.id); })
             .fail(function () { console.log('Signalr could not connect'); });
+
+        connection.disconnected(function () {
+            setTimeout(function () {
+                this.connect(callback);
+            }, 5000); // Restart connection after 5 seconds.
+        });
     }
 }

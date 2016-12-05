@@ -12,7 +12,7 @@ export default class OrderTag extends React.Component {
     render() {
         const {name, groupName, caption, color, labelColor, onClick = () => { } } = this.props;
             const style = {
-                'flex': '1 1 10%',
+                'flex': '1 1 15%',
                 'margin': '4px',
                 'height': 'auto',
                 'minHeight': '50px',

@@ -212,6 +212,17 @@ export function updateOrderPortionOfTerminalTicket(terminalId, orderUid, portion
     });
 }
 
+export function executeAutomationCommandForTerminalTicket(terminalId, orderUid, name, value, callback) {
+    var query = getExecuteAutomationCommandForTerminalTicketScript(terminalId, orderUid, name, value);
+    $.postJSON(query, function (response) {
+        if (response.errors) {
+            // handle errors
+        } else {
+            if (callback) callback(response.data.ticket);
+        }
+    });
+}
+
 export function updateOrderTagOfTerminalTicket(terminalId, orderUid, name, tag, callback) {
     var query = getUpdateOrderTagOfTerminalTicketScript(terminalId, orderUid, name, tag);
     $.postJSON(query, function (response) {
@@ -337,6 +348,15 @@ function getUpdateOrderTagOfTerminalTicketScript(terminalId, orderUid, name, tag
         terminalId:"${terminalId}",
         orderUid:"${orderUid}",
 	    orderTags:[{tagName:"${name}",tag:"${tag}"}])
+    ${getTicketResult()}}`;
+}
+
+function getExecuteAutomationCommandForTerminalTicketScript(terminalId, orderUid, name, value) {
+    return `mutation m{ticket:executeAutomationCommandForTerminalTicket(
+        terminalId:"${terminalId}",
+        orderUid:"${orderUid}",
+	    name:"${name}",
+        value:"${value}")
     ${getTicketResult()}}`;
 }
 

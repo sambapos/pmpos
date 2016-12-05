@@ -1,5 +1,5 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
 const TicketTotal = ({ticket}) => {
 
@@ -9,7 +9,7 @@ const TicketTotal = ({ticket}) => {
     return (
         <div className="totals">
             <span className="ticketTotalLabel">Total: </span>
-            <span className="ticketTotal">{getTicketTotal() }</span>
+            <span className="ticketTotal">{getTicketTotal()}</span>
         </div>
     );
 }
