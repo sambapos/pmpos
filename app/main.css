@@ -44,16 +44,21 @@ body {
 
 @media (min-width: 480px) {
     .menu{
-      width: 50%;
+      width: 40%;
       flex-direction: row;
     }
 	}
 
 @media (min-width: 640px) {
     .menu{
-      flex:2;
-      width: 60%;
+      width: 50%;
       margin-left: 10px;
+    }
+	}
+
+  @media (min-width: 800px) {
+    .menu{
+      flex:1.3;
     }
 	}
 

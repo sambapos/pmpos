@@ -34,3 +34,7 @@ export const loadEntityScreenFailure = (screen, error) => ({ type: types.LOAD_EN
 export const loadMyTicketsRequest = () => ({ type: types.LOAD_MYTICKETS_REQUEST });
 export const loadMyTicketsSuccess = (items) => ({ type: types.LOAD_MYTICKETS_SUCCESS, items });
 export const loadMyTicketsFailure = (error) => ({ type: types.LOAD_MYTICKETS_FAILURE, error });
+
+export const authenticationRequest = () => ({type:types.AUTHENTICATION_REQUEST});
+export const authenticationSuccess = (accessToken,refreshToken) => ({type:types.AUTHENTICATION_SUCCESS,accessToken,refreshToken});
+export const authenticationFailure = () => ({type:types.AUTHENTICATION_FAILURE});

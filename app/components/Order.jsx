@@ -1,18 +1,22 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { List, ListItem, ListSubHeader, ListDivider, ListItemContent, ListCheckbox } from 'react-toolbox/lib/list';
 import Portions from './Portions';
 import OrderTags from './OrderTags';
 import SelectedOrderTags from './SelectedOrderTags';
+import {SelectedOrderStates} from './SelectedOrderStates';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import { getProductPortions, getOrderTagsForTerminal } from '../queries';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
+import * as Queries from '../queries';
+import * as Actions from '../actions';
 
 const customContentStyle = {
     'width': '95%'
 };
 
-export default class Order extends React.Component {
+class Order extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -24,8 +28,14 @@ export default class Order extends React.Component {
         this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
     }
     render() {
-        const {id, name, quantity, price, priceTag, portion, productId, orderUid, orderTags, onClick = () => { }, onCancelOrder = () => { } } = this.props;
+        const {id, name, quantity, price, priceTag, portion, productId, orderUid, orderTags, orderStates,
+            onClick = () => { } } = this.props;
         const detailActions = [
+            <FlatButton
+                label="Gift"
+                primary={true}
+                onClick={this.onOrderGift}
+                />,
             <FlatButton
                 label="Remove Order"
                 primary={true}
@@ -37,7 +47,6 @@ export default class Order extends React.Component {
         ];
 
         var orderName = portion != 'Normal' ? name + '.' + portion : name;
-
         const orderLine =
             <div className="orderContent">
                 <div className="order">
@@ -48,6 +57,7 @@ export default class Order extends React.Component {
                         <span >{price}</span>
                     </span>
                 </div>
+                <SelectedOrderStates orderStates={orderStates}/>
                 <SelectedOrderTags orderTags={orderTags} />
             </div>;
 
@@ -78,28 +88,38 @@ export default class Order extends React.Component {
     }
 
     onPortionSelected = (name) => {
-        this.props.onChangePortion(this.props.orderUid, name,
-            () => {
-                if (this.state.orderTags && this.state.orderTags.length > 0) {
-                    this.props.getOrderTags(this.props.orderUid, (orderTags) => {
-                        this.setState({ orderTags: orderTags, selectedPortion: name });
-                    });
-                }
-                else
-                    this.handleDetailsClose();
-            });
+        Queries.updateOrderPortionOfTerminalTicket(this.props.terminalId, this.props.orderUid, name, (ticket) => {
+            this.props.setTicket(ticket);
+            if (this.state.orderTags && this.state.orderTags.length > 0) {
+                this.getOrderTags(this.props.orderUid, (orderTags) => {
+                    this.setState({ orderTags: orderTags, selectedPortion: name });
+                });
+            }
+            else
+                this.handleDetailsClose();
+        });
     }
 
     onOrderTagSelected = (name, tag) => {
-        this.props.onOrderTagSelected(this.props.orderUid, name, tag, (ticket) => {
-            this.props.getOrderTags(this.props.orderUid, (orderTags) => {
+        Queries.updateOrderTagOfTerminalTicket(this.props.terminalId, this.props.orderUid, name, tag, (ticket) => {
+            this.props.setTicket(ticket);
+            this.getOrderTags(this.props.orderUid, (orderTags) => {
                 this.setState({ orderTags: orderTags, isDetailsOpen: true });
             });
         });
     }
 
     onOrderCancelled = () => {
-        this.props.onCancelOrder(this.props.orderUid);
+        Queries.cancelOrderOnTerminalTicket(this.props.terminalId, this.props.orderUid, (ticket) => {
+            this.props.setTicket(ticket);
+        });
+        this.handleDetailsClose();
+    }
+
+    onOrderGift = () => {
+        Queries.executeAutomationCommandForTerminalTicket(this.props.terminalId, this.props.orderUid, 'Gift', '', (ticket) => {
+            this.props.setTicket(ticket);
+        })
         this.handleDetailsClose();
     }
 
@@ -108,12 +128,32 @@ export default class Order extends React.Component {
         getProductPortions(productId, (portions) => {
             this.setState({ isDetailsOpen: true, portions: portions, selectedPortion: portion });
         });
-        this.props.getOrderTags(this.props.orderUid, (orderTags) => {
+        this.getOrderTags(this.props.orderUid, (orderTags) => {
             this.setState({ orderTags: orderTags });
         });
     };
 
+    getOrderTags = (orderUid, callback) => {
+        Queries.getOrderTagsForTerminal(this.props.terminalId, orderUid, (orderTags) => {
+            callback(orderTags);
+        })
+    }
+
     handleDetailsClose = () => {
         this.setState({ isDetailsOpen: false });
     };
-} 
+}
+
+const mapStateToProps = state => ({
+    terminalId: state.app.get('terminalId'),
+    ticket: state.app.get('ticket')
+})
+
+const mapDispatchToProps = ({
+    setTicket: Actions.setTicket
+})
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(Order)

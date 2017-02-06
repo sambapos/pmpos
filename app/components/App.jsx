@@ -62,11 +62,7 @@ class App extends Component {
                 <Header header={this.getHeader(ticket)} />
                 <div className="mainBody">
                     <Menu onMenuItemClick={this.onMenuItemClick} />
-                    <Orders ticket={ticket}
-                        onChangePortion={this.changePortion}
-                        getOrderTags={this.getOrderTags}
-                        onCancelOrder={this.cancelOrder}
-                        onOrderTagSelected={this.onOrderTagSelected} />
+                    <Orders ticket={ticket}/>
                     <MyTickets ticket={ticket} onClick={this.onTicketClick} />
                 </div>
                 <TicketTags ticket={ticket} />
@@ -89,19 +85,6 @@ class App extends Component {
         console.log('Ticket Open', ticketId);
         Queries.loadTerminalTicket(this.props.terminalId, ticketId, (ticket) => {
             this.props.setTicket(ticket);
-        });
-    }
-
-    getOrderTags = (orderUid, callback) => {
-        Queries.getOrderTagsForTerminal(this.props.terminalId, orderUid, (orderTags) => {
-            callback(orderTags);
-        })
-    }
-
-    onOrderTagSelected = (orderUid, name, tag, callback) => {
-        Queries.updateOrderTagOfTerminalTicket(this.props.terminalId, orderUid, name, tag, (ticket) => {
-            this.props.setTicket(ticket);
-            callback(ticket);
         });
     }
 
@@ -154,19 +137,6 @@ class App extends Component {
             if (this.props.ticket.id == 0)
                 this.props.updateMessage('Ticket sucsessfully submitted!');
             this.props.setTicket(undefined);
-        });
-    }
-
-    changePortion = (orderUid, portion, callback) => {
-        Queries.updateOrderPortionOfTerminalTicket(this.props.terminalId, orderUid, portion, (ticket) => {
-            this.props.setTicket(ticket);
-            if (callback) callback();
-        });
-    }
-
-    cancelOrder = (orderUid) => {
-        Queries.cancelOrderOnTerminalTicket(this.props.terminalId, orderUid, (ticket) => {
-            this.props.setTicket(ticket);
         });
     }
 
