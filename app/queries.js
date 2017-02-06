@@ -1,11 +1,15 @@
 import $ from 'jquery';
 import jQuery from 'jquery';
 import { appconfig } from './config';
+import { store } from './store';
+import * as Actions from './actions';
 
 var config = appconfig();
-var accessToken = '';
 
 $.postJSON = function (query, callback) {
+    var accessToken = store.getState().login.get('accessToken');
+    var refreshToken = store.getState().login.get('refreshToken');
+
     var data = JSON.stringify({ query: query });
     return jQuery.ajax({
         'type': 'POST',
@@ -16,18 +20,57 @@ $.postJSON = function (query, callback) {
         'dataType': 'json'
     })
         .done(response => { if (callback) callback(response) })
-        .fail(response => { if (callback) callback(response.responseJSON) });
+        .fail(response => {
+            if (response.status === 401 && refreshToken) {
+                console.log(refreshToken);
+                RefreshToken(refreshToken, (response) => {
+                    if (response.status === 200) {
+                        $.postJSON(query, callback);
+                        return;
+                    }
+                })
+                window.location = '#/login';
+                return;
+            }
+            if (response.status === 401 && !refreshToken) {
+                window.location = '#/login';
+                return
+            }
+            if (callback) callback(response.responseJSON)
+        });
 };
 
-export function Authorize(password = 'password', callback) {
+export function RefreshToken(refreshToken, callback) {
+    store.dispatch(Actions.authenticationRequest());
     jQuery.ajax({
         'type': 'POST',
         'url': config.GQLserv + '/Token',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        data: $.param({ grant_type: 'password', username: 'samba', password: 'password' })
+        data: $.param({ grant_type: 'refresh_token', refresh_token: refreshToken, client_id: 'pmpos', client_secret: 'test' })
     }).done(response => {
-        accessToken = response.access_token;
-        callback();
+        store.dispatch(Actions.authenticationSuccess(response.access_token, response.refresh_token));
+        callback(response);
+    }).fail(response => {
+        store.dispatch(Actions.authenticationFailure());
+        callback(response);
+    });
+}
+
+export function Authenticate(userName, password, callback, failCallback) {
+    jQuery.ajax({
+        'type': 'POST',
+        'url': config.GQLserv + '/Token',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        data: $.param({ grant_type: 'password', username: userName, password: password, client_id: 'pmpos', client_secret: 'test' })
+    }).done(response => {
+        callback(response.access_token, response.refresh_token);
+    }).fail(response => {
+        var error = response.responseText ? JSON.parse(response.responseText).error_description : undefined;
+        if (!error) {
+            error = response.statusText;
+        }
+        console.log('error', error);
+        failCallback(response.status, error)
     });
 }
 
@@ -427,7 +470,7 @@ function getTicketResult() {
 }
 
 function getAddOrderToTicketQuery(ticket, menuItem, quantity = 1) {
-    var {totalAmount, remainingAmount,...ticket2} = ticket;
+    var {totalAmount, remainingAmount, ...ticket2} = ticket;
     var ticketStr = JSON.stringify(ticket2);
     ticketStr = ticketStr.replace(/\"([^(\")"]+)\":/g, '$1:');
 
